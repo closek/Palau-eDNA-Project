@@ -1,8 +1,21 @@
 ---
 title: "PalaueDNA_Nov2021"
 author: "Collin Closek"
+  - name: add name here
+  orcid: 
+  email: add-your@email.com
+  affiliations:
+date: "`r Sys.Date()`"
 format: html
+  number-sections: true
+  toc: true
+  code-tools: true
+  theme: mintly
+  number-depth: 1
+  self-contained: true
 editor: visual
+title-block-banner: "#33ccffff"
+title-block-banner-color: "#ffdd00ff"
 ---
 
 ## Quarto trial with the Palau eDNA Nov 2021 dataset
