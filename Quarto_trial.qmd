@@ -1,0 +1,77 @@
+---
+title: "PalaueDNA_Nov2021"
+author: "Collin Closek"
+format: html
+editor: visual
+---
+
+## Quarto trial with the Palau eDNA Nov 2021 dataset
+
+```{r}
+1 + 1
+```
+
+You can add options to executable code like this
+
+```{r}
+#| echo: false
+2 * 2
+```
+
+The `echo: false` option disables the printing of code (only output is displayed).
+
+### Load required packages
+
+```{r}
+#| label: load packages
+#| include: true
+
+#install.packages("tidyverse")
+#install.packages("vegan")
+#install.packages("devtools")
+#devtools::install_github("rlbarter/superheat")
+#install.packages("here")
+#install.packages("phyloseq")
+#install.packages("owmr")
+library(tidyverse)
+library(tidyr)
+library(ggplot2)
+library(dplyr)
+library(vegan)
+library(data.table)
+library(superheat)
+
+
+
+#devtools::install_github("joey711/phyloseq")
+library(phyloseq)
+packageVersion("phyloseq")
+library(owmr)
+
+#if(!requireNamespace("BiocManager", quietly = TRUE)){
+#  install.packages("BiocManager")
+#  }
+#BiocManager::install("multtest")
+
+
+#if (!requireNamespace("devtools", quietly = TRUE))
+#      install.packages('devtools')
+library(devtools)
+
+#BiocManager::install("MicrobiotaProcess")
+library(MicrobiotaProcess)
+library(patchwork)
+
+library(here) #attach at the end of pkgs or use conflicted pkg
+```
+
+### Load data
+
+```{r}
+#esv_data_all <- (read.delim("./data/JVB1710-MiFishU-read-data.csv", sep=",", check.names=FALSE, header = TRUE))
+
+esv_data_all <- read.csv(here("data/JVB1710-MiFishU-read-data.csv"),header = TRUE)
+
+head (esv_data_all)
+#glimpse (esv_data_all)
+```
