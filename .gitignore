@@ -13,7 +13,8 @@
 !/data/.gitkeep
 
 # analysis output folder
-products/
+/products/*
+!/products/.gitkeep
 
 # Quarto rendered html
 Quarto_trial.html
