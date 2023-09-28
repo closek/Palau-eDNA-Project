@@ -161,6 +161,8 @@ esv_read_data <-
   )
 
 write.csv(esv_read_data, file = "/Users/closek/Documents/Nov2021_PalaueDNA/R/products/esv_read_data_rv.csv")
+# more generalizable saving - path starts a Rproj root (makes code more transferable)
+# write_csv(esv_read_data, file = file.path("products/esv_read_data_rv.csv"))
 ```
 
 ### Identify and verify that higher taxonomic rankings check out
