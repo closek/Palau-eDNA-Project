@@ -17,7 +17,13 @@ names(cal_palettes)
 var_n <- 6
 
 # palette for report
-report_pal <- cal_palette(name = "kelp1", n = var_n, type = "continuous")
+pal <- cal_palette(name = "kelp1", n = var_n, type = "continuous")
 
 # view palette
-barplot(1:var_n, col = report_pal)
+barplot(1:var_n, col = pal)
+show_col(pal)
+
+# remove red color from palette - not color blind friendly
+report_pal <- cal_palette(name = "kelp1", n = var_n, type = "continuous")[2:6]
+show_col(report_pal)
+
