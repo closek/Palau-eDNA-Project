@@ -436,6 +436,7 @@ plot_bar(physeq2, x= "Zone", fill = "Family") + facet_wrap(~Cardinal_direction)
 
 ```{r}
 plot_richness(physeq2, measures = c("Chao1", "Shannon"), x="Near_or_Offshore", color="Near_or_Offshore")
+### USE for Prelim Report
 ```
 
 ```{r}
@@ -459,6 +460,7 @@ dev.off()
 
 ```{r}
 po +facet_wrap(~Near_or_Offshore)
+### USE for Prelim Report
 ```
 
 ```{r}
@@ -467,6 +469,8 @@ po +facet_wrap(~Cardinal_direction)
 
 ```{r}
 po +facet_wrap(~Zone)
+#ORDER BY NEARSHORE & OFFSHORE
+###USE for Prelim Report
 ```
 
 ### Subset taxa
