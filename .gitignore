@@ -17,7 +17,7 @@
 !/products/.gitkeep
 
 # Quarto rendered html
-Quarto_trial.html
+##Quarto_trial.html
 # rendered analysis html - can change later if needed
 #*.html
 

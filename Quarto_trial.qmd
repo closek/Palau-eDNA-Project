@@ -368,8 +368,8 @@ sample_sums(physeq1_mar)
 ### Prune Environmental samples with less than 10K sequences
 
 ```{r}
-sample_sums(physeq1_mar)<=10000
-physeq1_mar_lt10k <- prune_samples(sample_sums(physeq1_mar)<=10000, physeq1_mar)
+sample_sums(physeq1_mar)<10000
+physeq1_mar_lt10k <- prune_samples(sample_sums(physeq1_mar)<10000, physeq1_mar)
 physeq1_mar_lt10k
 sample_sums(physeq1_mar_lt10k)
 sample_names(physeq1_mar_lt10k)
@@ -379,3 +379,156 @@ sample_names(physeq1_mar_pruned)
 physeq1_mar_pruned
 #removed 14 samples (previously 160 samples, now 146)
 ```
+
+### Standardize number of reads to the median sequencing depth
+
+```{r}
+total = median(sample_sums(physeq1_mar_pruned))
+#total == 74889
+standf = function(x, t=total) round(t *(x / sum(x)))
+physeq2 = transform_sample_counts(physeq1_mar_pruned, standf)
+physeq2
+
+```
+
+
+```{r}
+#rcurve(physeq2, add_sample_data = TRUE)
+#p <- ggrare(physeq2, step = 500, color = "Zone", label = "Sample", se = FALSE)
+
+sample_data(physeq2)
+#TopNESVs <- names(sort(taxa_sums(physeq2), TRUE)[1:30])
+#physeq2_30 <- prune_taxa(TopNESVs, physeq2$Species)
+#print(physeq2_30)
+```
+
+### Barplots of normalized environmental samples and marine ESVs 
+
+```{r}
+plot_bar(physeq2, fill = "Family")
+```
+
+```{r}
+plot_bar(physeq2, fill = "Order")
+```
+
+### Heatmaps of normalized environmental samples and marine ESVs
+
+```{r}
+plot_heatmap(physeq2, taxa.label="Phylum")
+```
+
+### Alternative barplot formats
+
+```{r}
+plot_bar(physeq2, x= "Zone", fill = "Family")
+```
+
+```{r}
+plot_bar(physeq2, x= "Zone", fill = "Family") + facet_wrap(~Cardinal_direction)
+```
+
+```{r}
+#plot_net(physeq2, maxdist=0.4, color="Cardinal_direction", shape="Near_or_Offshore")
+```
+
+### Richness plots
+
+```{r}
+plot_richness(physeq2, measures = c("Chao1", "Shannon"), x="Near_or_Offshore", color="Near_or_Offshore")
+```
+
+```{r}
+plot_richness(physeq2, measures=c("Chao1", "Shannon"), x="Near_or_Offshore", color="Zone")
+```
+
+### Ordinations
+
+```{r}
+physeq2.ord <- ordinate(physeq2, "PCoA", "bray")
+```
+
+```{r}
+po <- plot_ordination(physeq2, physeq2.ord, type = "samples", color = "Zone", shape = "Near_or_Offshore", title = "Nearshore & Offshore Samples")
+po
+
+jpeg(file="saving_plot1.jpeg")
+po <- plot_ordination(physeq2, physeq2.ord, type = "samples", color = "Zone", shape = "Near_or_Offshore", title = "Nearshore & Offshore Samples")
+dev.off()
+```
+
+```{r}
+po +facet_wrap(~Near_or_Offshore)
+```
+
+```{r}
+po +facet_wrap(~Cardinal_direction)
+```
+
+```{r}
+po +facet_wrap(~Zone)
+```
+
+### Subset taxa
+
+```{r}
+sf = filter_taxa(physeq2, function(x) sd(x)/mean(x) > 3.0, TRUE)
+sfAct = subset_taxa(sf, Class=="Actinopteri")
+sfMam = subset_taxa(sf, Class=="Mammalia")
+sfCon = subset_taxa(sf, Class=="Chondrichthyes")
+```
+
+### Marine Actinopteri (Bony Fish) bar plot
+
+```{r}
+plot_bar(sfAct, fill = "Family")
+```
+### Marine Mammals
+
+```{r}
+plot_bar(sfMam, fill = "Species")
+
+jpeg(file="saving_plot2.jpeg")
+plot_bar(sfAct, fill = "Family")
+dev.off()
+```
+
+## Marine Chondrichthyes (Sharks & Rays)
+
+```{r}
+plot_bar(sfCon, fill = "Species")
+```
+
+### Top10
+
+```{r}
+OTUnames10 = names(sort(taxa_sums(sf), TRUE)[1:10])
+sf10  = prune_taxa(OTUnames10,  sf)
+
+sf10near = names(subset(sample_data(sf), Near_or_Offshore=="Nearshore"))
+sf10off = names(subset(sample_data(sf), Near_or_Offshore=="Offshore"))
+
+top10 <- names(sort(taxa_sums(sf), decreasing = TRUE)[1:10])
+
+phyloseq::tax_table(sf)[top10,]
+print(sf10near)
+print(sf10off)
+
+
+```
+
+```{r}
+sample_variables(physeq2)
+
+phyloseq::tax_table(sf10)[top10,]
+
+sfNearshore <- subset_samples(sf, Near_or_Offshore == "Nearshore")
+sfNearshore
+
+sfOffshore <- subset_samples(sf, Near_or_Offshore == "Offshore")
+sfOffshore
+sfNearshore
+```
+
+
+
