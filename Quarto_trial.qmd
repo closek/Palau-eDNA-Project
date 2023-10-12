@@ -447,7 +447,7 @@ Fig_richness <- plot_richness(physeq2,
                               measures = c("Chao1", "Shannon"), 
                               x="Near_or_Offshore", 
                               color="Near_or_Offshore") +
-  theme_classic(base_size = 12) +
+  theme_light(base_size = 12) +
   scale_color_manual(values = near_offshore_colors) +
   labs(color = "Region") +
   theme(axis.title.x = element_blank())
@@ -479,18 +479,30 @@ po <- plot_ordination(physeq2, physeq2.ord, type = "samples", color = "Zone", sh
 po
 
 jpeg(file="saving_plot1.jpeg")
-po <- plot_ordination(physeq2, physeq2.ord, type = "samples", color = "Zone", shape = "Near_or_Offshore", title = "Nearshore & Offshore Samples")
-dev.off()
 ```
 
 ```{r}
-Fig_ord_near_off <- po +
+Fig_ord_near_off <- plot_ordination(physeq2, 
+                                    physeq2.ord, 
+                                    type = "samples", 
+                                    color = "Zone", 
+                                    shape = "Near_or_Offshore", 
+                                    title = "Nearshore & Offshore Samples") +
   facet_wrap(~Near_or_Offshore) +
-  scale_color_manual(values = zone_colors)
-
-
+  scale_color_manual(values = zone_colors,
+                     breaks = c("SHR", "LGN", "FRR", "AFZ", "DFZ", "NMS")) +
+  theme_light() +
+  labs(shape = "Near or Offshore") +
+  coord_fixed()
 
 Fig_ord_near_off
+ggsave(plot = Fig_ord_near_off, 
+       device = "png", 
+       filename = file.path("products/figures/Fig_ord_near_offshore.png"),
+       dpi = 600,
+       width = 7,
+       height = 3.5,
+       units = "in")
 
 ### USE for Prelim Report
 ```
