@@ -440,6 +440,9 @@ plot_bar(physeq2, x= "Zone", fill = "Family") + facet_wrap(~Cardinal_direction)
 
 ```{r}
 # plot_richness() function produces a ggplot object and can be ammended just like ggplot
+# source color palette
+source(file.path("./scripts/color_palette.R"))
+
 Fig_richness <- plot_richness(physeq2, 
                               measures = c("Chao1", "Shannon"), 
                               x="Near_or_Offshore", 
@@ -481,7 +484,14 @@ dev.off()
 ```
 
 ```{r}
-po +facet_wrap(~Near_or_Offshore)
+Fig_ord_near_off <- po +
+  facet_wrap(~Near_or_Offshore) +
+  scale_color_manual(values = zone_colors)
+
+
+
+Fig_ord_near_off
+
 ### USE for Prelim Report
 ```
 

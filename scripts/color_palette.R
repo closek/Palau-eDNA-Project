@@ -7,7 +7,7 @@ library(calecopal) # calecopal: a California-inspired package of color palettes
 library(scales) # helps display palettes in Rstudio
 
 # list all palette names
-names(cal_palettes)
+#names(cal_palettes)
 
 # palettes in consideration 
 # "kelp1" - similar yellow/blue to PICRC colors, more colors. n = 6 most similar to PICRC
@@ -20,8 +20,8 @@ var_n <- 8
 pal <- cal_palette(name = "sierra1", n = var_n, type = "continuous")
 
 # view palette
-barplot(1:var_n, col = pal)
-show_col(pal)
+# barplot(1:var_n, col = pal)
+# show_col(pal)
 
 # Build defined color palette
 ## For the 'Near_or_Offshore' variable
