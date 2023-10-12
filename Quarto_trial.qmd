@@ -160,7 +160,6 @@ esv_read_data <-
     values_from = "obs"
   )
 
-#write.csv(esv_read_data, file = "/Users/closek/Documents/Nov2021_PalaueDNA/R/products/esv_read_data_rv.csv")
 # more generalizable saving - path starts a Rproj root (makes code more transferable)
  write_csv(esv_read_data, file = file.path("products/esv_read_data_rv.csv"))
 ```
@@ -189,10 +188,6 @@ nearshore_esv <- esv_read_data %>% select(2, 6, 7, 8, 9, 10, contains('COS'), co
 # general and transferable file saving
 write_csv(offshore_esv, file = file.path("products/offshore_esv.csv"))
 write_csv(nearshore_esv, file = file.path("products/nearshore_esv.csv"))
-
-# does not work on other's computers - inflexible file path - above works within the Rproj and across Mac/PC
-#write.csv(offshore_esv, file = "/Users/closek/Documents/Nov2021_PalaueDNA/R/products/offshore_esv.csv")
-#write.csv(nearshore_esv, file = "/Users/closek/Documents/Nov2021_PalaueDNA/R/products/nearshore_esv.csv")
 ```
 
 ### Create Nearshore & Offshore species lists
@@ -202,8 +197,9 @@ offshore_esv_sp <- esv_read_data %>% select(2, 10, contains('COS'), contains('AF
 
 nearshore_esv_sp <- esv_read_data %>% select(2, 10, contains('COS'), contains('SHR'), contains('LGN'), contains('FRR'))
 
-write.csv(offshore_esv_sp, file = "/Users/closek/Documents/Nov2021_PalaueDNA/R/products/offshore_esv_sp.csv")
-write.csv(nearshore_esv_sp, file = "/Users/closek/Documents/Nov2021_PalaueDNA/R/products/nearshore_esv_sp.csv")
+write_csv(offshore_esv_sp, file = file.path("products/offshore_esv_sp.csv"))
+write_csv(nearshore_esv_sp, file = file.path("products/nearshore_esv_sp.csv"))
+
 ```
 
 ### Unique nearshore species
@@ -214,9 +210,9 @@ ns_esv <- nearshore_esv[rowSums(nearshore_esv==0, na.rm=TRUE)<ncol(nearshore_esv
 n_distinct(nearshore_esv$Species)
 unique(nearshore_esv$Species)
 
-nearshore_esv_sp_wo0 <- read.csv(here("products/nearshore_esv_sp_wo0.csv"),header = TRUE)
-unique(nearshore_esv_sp_wo0$Species)
-n_distinct(nearshore_esv_sp_wo0$Species)
+#nearshore_esv_sp_wo0 <- read.csv(here("products/nearshore_esv_sp_wo0.csv"),header = TRUE)
+#unique(nearshore_esv_sp_wo0$Species)
+#n_distinct(nearshore_esv_sp_wo0$Species)
 ```
 
 ### Unique offshore species
@@ -225,9 +221,9 @@ n_distinct(nearshore_esv_sp_wo0$Species)
 n_distinct(offshore_esv$Species)
 unique(offshore_esv$Species)
 
-offshore_esv_sp_wo0 <- read.csv(here("products/offshore_esv_sp_wo0.csv"),header = TRUE)
-unique(offshore_esv_sp_wo0$Species)
-n_distinct(offshore_esv_sp_wo0$Species)
+#offshore_esv_sp_wo0 <- read.csv(here("products/offshore_esv_sp_wo0.csv"),header = TRUE)
+#unique(offshore_esv_sp_wo0$Species)
+#n_distinct(offshore_esv_sp_wo0$Species)
 ```
 
 ### Unique species Nearshore & Offshore
@@ -293,7 +289,8 @@ colSums(esv_read_count)
 
 ESV <- phyloseq::otu_table(esv_read_count_m, taxa_are_rows = TRUE)
 
-write.csv(ESV, file = "/Users/closek/Documents/Nov2021_PalaueDNA/R/products/ESV.csv")
+#write_csv(ESV, file = file.path("products/ESV.csv"))
+#write.csv(ESV, file = "/Users/closek/Documents/Nov2021_PalaueDNA/R/products/ESV.csv")
 
 #create a taxonomy table
 esv_read_tax <- select(esv_read_data, -c(1,3))
@@ -341,12 +338,15 @@ physeq1
 ### Families Barplot with only Environmental samples (excluding Controls)
 
 ```{r}
-#| label: Families from Environmental samples
+#| label: Fam-Env-samples
+#| title: Families from Environmental samples
 #| fig-width: 6
 #| fig-asp: 0.618
-#| out-width: "70%"
+#| out-width: "40%"
 #| fig-align: center
 #| fig-format: "png"
+
+
 plot_bar(physeq1, fill = "Family")
 ```
 
@@ -439,8 +439,26 @@ plot_bar(physeq2, x= "Zone", fill = "Family") + facet_wrap(~Cardinal_direction)
 ### Richness plots
 
 ```{r}
-plot_richness(physeq2, measures = c("Chao1", "Shannon"), x="Near_or_Offshore", color="Near_or_Offshore")
-### USE for Prelim Report
+# plot_richness() function produces a ggplot object and can be ammended just like ggplot
+Fig_richness <- plot_richness(physeq2, 
+                              measures = c("Chao1", "Shannon"), 
+                              x="Near_or_Offshore", 
+                              color="Near_or_Offshore") +
+  theme_classic(base_size = 12) +
+  scale_color_manual(values = near_offshore_colors) +
+  labs(color = "Region") +
+  theme(axis.title.x = element_blank())
+
+Fig_richness
+
+ggsave(plot = Fig_richness, 
+       device = "png", 
+       filename = file.path("products/figures/Fig_richness_near_offshore.png"),
+       dpi = 600,
+       width = 6,
+       height = 4,
+       units = "in")
+
 ```
 
 ```{r}
