@@ -17,22 +17,23 @@ names(cal_palettes)
 var_n <- 6
 
 # palette for report
-pal <- cal_palette(name = "kelp1", n = var_n, type = "continuous")
+pal <- cal_palette(name = "sierra1", n = var_n, type = "continuous")
 
 # view palette
 barplot(1:var_n, col = pal)
 show_col(pal)
 
-# remove red color from palette - not color blind friendly
-report_pal <- cal_palette(name = "kelp1", n = var_n, type = "continuous")[2:6]
-show_col(report_pal)
-barplot(1:5, col = report_pal)
-
-# subsitute yellow and blue with PICRC logo colors
-report_pal_alt <- report_pal
-report_pal_alt[1] <- "#FFC52E"
-report_pal_alt[4] <- "#1BC5FC"
-
-# visually inspect
-show_col(report_pal_alt)
-barplot(1:5, col = report_pal_alt)
+# decided to not use right now - AM & CC 2023-10-12
+# # remove red color from palette - not color blind friendly
+# report_pal <- cal_palette(name = "kelp1", n = var_n, type = "continuous")[2:6]
+# show_col(report_pal)
+# barplot(1:5, col = report_pal)
+# 
+# # subsitute yellow and blue with PICRC logo colors
+# report_pal_alt <- report_pal
+# report_pal_alt[1] <- "#FFC52E"
+# report_pal_alt[4] <- "#1BC5FC"
+# 
+# # visually inspect
+# show_col(report_pal_alt)
+# barplot(1:5, col = report_pal_alt)
