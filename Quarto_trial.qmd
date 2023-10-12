@@ -514,7 +514,7 @@ po +facet_wrap(~Cardinal_direction)
 
 ```{r}
 Fig_ord_near_off_grid <- po +
-  facet_wrap(~Zone)+
+  facet_wrap(~factor(Zone, levels = c("SHR", "LGN", "FRR", "AFZ", "DFZ", "NMS"))) +
   scale_color_manual(values = zone_colors,
                      breaks = c("SHR", "LGN", "FRR", "AFZ", "DFZ", "NMS")) +
   theme_light() +
