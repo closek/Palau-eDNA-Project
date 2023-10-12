@@ -160,9 +160,9 @@ esv_read_data <-
     values_from = "obs"
   )
 
-write.csv(esv_read_data, file = "/Users/closek/Documents/Nov2021_PalaueDNA/R/products/esv_read_data_rv.csv")
+#write.csv(esv_read_data, file = "/Users/closek/Documents/Nov2021_PalaueDNA/R/products/esv_read_data_rv.csv")
 # more generalizable saving - path starts a Rproj root (makes code more transferable)
-# write_csv(esv_read_data, file = file.path("products/esv_read_data_rv.csv"))
+ write_csv(esv_read_data, file = file.path("products/esv_read_data_rv.csv"))
 ```
 
 ### Identify and verify that higher taxonomic rankings check out
@@ -186,8 +186,13 @@ offshore_esv <- esv_read_data %>% select(2, 6, 7, 8, 9, 10, contains('COS'), con
 
 nearshore_esv <- esv_read_data %>% select(2, 6, 7, 8, 9, 10, contains('COS'), contains('SHR'), contains('LGN'), contains('FRR'))
 
-write.csv(offshore_esv, file = "/Users/closek/Documents/Nov2021_PalaueDNA/R/products/offshore_esv.csv")
-write.csv(nearshore_esv, file = "/Users/closek/Documents/Nov2021_PalaueDNA/R/products/nearshore_esv.csv")
+# general and transferable file saving
+write_csv(offshore_esv, file = file.path("products/offshore_esv.csv"))
+write_csv(nearshore_esv, file = file.path("products/nearshore_esv.csv"))
+
+# does not work on other's computers - inflexible file path - above works within the Rproj and across Mac/PC
+#write.csv(offshore_esv, file = "/Users/closek/Documents/Nov2021_PalaueDNA/R/products/offshore_esv.csv")
+#write.csv(nearshore_esv, file = "/Users/closek/Documents/Nov2021_PalaueDNA/R/products/nearshore_esv.csv")
 ```
 
 ### Create Nearshore & Offshore species lists
@@ -391,7 +396,6 @@ physeq2
 
 ```
 
-
 ```{r}
 #rcurve(physeq2, add_sample_data = TRUE)
 #p <- ggrare(physeq2, step = 500, color = "Zone", label = "Sample", se = FALSE)
@@ -402,7 +406,7 @@ sample_data(physeq2)
 #print(physeq2_30)
 ```
 
-### Barplots of normalized environmental samples and marine ESVs 
+### Barplots of normalized environmental samples and marine ESVs
 
 ```{r}
 plot_bar(physeq2, fill = "Family")
@@ -487,6 +491,7 @@ sfCon = subset_taxa(sf, Class=="Chondrichthyes")
 ```{r}
 plot_bar(sfAct, fill = "Family")
 ```
+
 ### Marine Mammals
 
 ```{r}
@@ -533,6 +538,3 @@ sfOffshore <- subset_samples(sf, Near_or_Offshore == "Offshore")
 sfOffshore
 sfNearshore
 ```
-
-
-
