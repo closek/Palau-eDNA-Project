@@ -475,19 +475,20 @@ physeq2.ord <- ordinate(physeq2, "PCoA", "bray")
 ```
 
 ```{r}
-po <- plot_ordination(physeq2, physeq2.ord, type = "samples", color = "Zone", shape = "Near_or_Offshore", title = "Nearshore & Offshore Samples")
+# base plot ordination - other iterations are built on this object
+po <- plot_ordination(physeq2, 
+                      physeq2.ord, 
+                      type = "samples", 
+                      color = "Zone", 
+                      shape = "Near_or_Offshore", 
+                      title = "Nearshore & Offshore Samples")
 po
 
 jpeg(file="saving_plot1.jpeg")
 ```
 
 ```{r}
-Fig_ord_near_off <- plot_ordination(physeq2, 
-                                    physeq2.ord, 
-                                    type = "samples", 
-                                    color = "Zone", 
-                                    shape = "Near_or_Offshore", 
-                                    title = "Nearshore & Offshore Samples") +
+Fig_ord_near_off <- po +
   facet_wrap(~Near_or_Offshore) +
   scale_color_manual(values = zone_colors,
                      breaks = c("SHR", "LGN", "FRR", "AFZ", "DFZ", "NMS")) +
@@ -512,7 +513,23 @@ po +facet_wrap(~Cardinal_direction)
 ```
 
 ```{r}
-po +facet_wrap(~Zone)
+Fig_ord_near_off_grid <- po +
+  facet_wrap(~Zone)+
+  scale_color_manual(values = zone_colors,
+                     breaks = c("SHR", "LGN", "FRR", "AFZ", "DFZ", "NMS")) +
+  theme_light() +
+  labs(shape = "Near or Offshore") +
+  coord_fixed()
+
+Fig_ord_near_off_grid
+
+ggsave(plot = Fig_ord_near_off_grid, 
+       device = "png", 
+       filename = file.path("products/figures/Fig_ord_near_offshore_grid.png"),
+       dpi = 600,
+       width = 7,
+       height = 5,
+       units = "in")
 #ORDER BY NEARSHORE & OFFSHORE
 ###USE for Prelim Report
 ```
