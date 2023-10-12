@@ -446,11 +446,13 @@ source(file.path("./scripts/color_palette.R"))
 Fig_richness <- plot_richness(physeq2, 
                               measures = c("Chao1", "Shannon"), 
                               x="Near_or_Offshore", 
-                              color="Near_or_Offshore") +
+                              color="Near_or_Offshore",
+                              shape="Near_or_Offshore") +
   theme_light(base_size = 12) +
   scale_color_manual(values = near_offshore_colors) +
-  labs(color = "Region") +
-  theme(axis.title.x = element_blank())
+  labs(color = "Region",
+       shape = "Region") +
+  theme(axis.title.x =element_blank())
 
 Fig_richness
 
@@ -491,7 +493,9 @@ jpeg(file="saving_plot1.jpeg")
 Fig_ord_near_off <- po +
   facet_wrap(~Near_or_Offshore) +
   scale_color_manual(values = zone_colors,
-                     breaks = c("SHR", "LGN", "FRR", "AFZ", "DFZ", "NMS")) +
+                     breaks = c("SHR", "LGN", "FRR", "AFZ", "DFZ", "NMS"),
+                     guide = guide_legend(override.aes = list(size = 3, shape = c(16,16,16,17,17,17)))) +
+  guides(shape = guide_legend(override.aes = list(size = 3, shape = c(1,2)))) +
   theme_light() +
   labs(shape = "Near or Offshore") +
   coord_fixed()
@@ -516,7 +520,9 @@ po +facet_wrap(~Cardinal_direction)
 Fig_ord_near_off_grid <- po +
   facet_wrap(~factor(Zone, levels = c("SHR", "LGN", "FRR", "AFZ", "DFZ", "NMS"))) +
   scale_color_manual(values = zone_colors,
-                     breaks = c("SHR", "LGN", "FRR", "AFZ", "DFZ", "NMS")) +
+                     breaks = c("SHR", "LGN", "FRR", "AFZ", "DFZ", "NMS"),
+                     guide = guide_legend(override.aes = list(size = 3, shape = c(16,16,16,17,17,17)))) +
+  guides(shape = guide_legend(override.aes = list(size = 3, shape = c(1,2)))) +
   theme_light() +
   labs(shape = "Near or Offshore") +
   coord_fixed()
