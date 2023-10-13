@@ -22,18 +22,12 @@ editor_options:
 ## Quarto trial with the Palau eDNA Nov 2021 dataset
 
 ```{r}
-#| echo: false
-1 + 1
+ #| label: setup
+ #| echo: false
+ #| warning: false
 ```
 
-You can add options to executable code like this
-
-```{r}
-#| echo: false
-2 * 2
-```
-
-The `echo: false` option disables the printing of code (only output is displayed).
+The `echo: false` option disables the printing of code (only output is displayed in rendered html).
 
 ### Load required packages
 
@@ -489,7 +483,7 @@ po
 jpeg(file="saving_plot1.jpeg")
 ```
 
-```{r}
+```{r, echo=TRUE}
 Fig_ord_near_off <- po +
   facet_wrap(~Near_or_Offshore) +
   scale_color_manual(values = zone_colors,
@@ -497,7 +491,7 @@ Fig_ord_near_off <- po +
                      guide = guide_legend(override.aes = list(size = 3, shape = c(16,16,16,17,17,17)))) +
   guides(shape = guide_legend(override.aes = list(size = 3, shape = c(1,2)))) +
   theme_light() +
-  labs(shape = "Near or Offshore") +
+  labs(shape = "Region") +
   coord_fixed()
 
 Fig_ord_near_off
@@ -524,7 +518,7 @@ Fig_ord_near_off_grid <- po +
                      guide = guide_legend(override.aes = list(size = 3, shape = c(16,16,16,17,17,17)))) +
   guides(shape = guide_legend(override.aes = list(size = 3, shape = c(1,2)))) +
   theme_light() +
-  labs(shape = "Near or Offshore") +
+  labs(shape = "Region") +
   coord_fixed()
 
 Fig_ord_near_off_grid
@@ -545,14 +539,65 @@ ggsave(plot = Fig_ord_near_off_grid,
 ```{r}
 sf = filter_taxa(physeq2, function(x) sd(x)/mean(x) > 3.0, TRUE)
 sfAct = subset_taxa(sf, Class=="Actinopteri")
+# create dataframe from phyloseq object
+sfAct_df <- psmelt(sfAct)
 sfMam = subset_taxa(sf, Class=="Mammalia")
 sfCon = subset_taxa(sf, Class=="Chondrichthyes")
 ```
 
 ### Marine Actinopteri (Bony Fish) bar plot
 
-```{r}
-plot_bar(sfAct, fill = "Family")
+```{r, cache=TRUE}
+# library for pasting visual objects in grid layout
+library(cowplot)
+library(viridisLite)
+
+fish_color <- viridis(n = 90, option = "turbo")
+
+Fig_bony_fish <- plot_bar(sfAct, fill = "Family") +
+  theme_classic() +
+  theme(axis.title.x = element_blank(),
+        axis.text = element_blank(),
+        axis.line.x.bottom = element_blank(),
+        axis.ticks.x = element_blank(),
+        legend.position="bottom") +
+  guides(fill = guide_legend(ncol=10)) +
+  scale_y_continuous(expand = c(0,0)) +
+  scale_fill_manual(values = fish_color)
+
+# extract legend
+bony_fish_legend <- cowplot::get_legend(Fig_bony_fish# + 
+  # create some space to the left of the legend
+ # theme(legend.box.margin = margin(0, 0, 0, 0))
+)
+
+# place figure without legend on grid
+Fig_bony_fish_leg <- cowplot::plot_grid(
+  Fig_bony_fish +
+  theme(legend.position="none")
+ )
+
+# add legend to gird
+Fig_bony_fish_leg2 <- cowplot::plot_grid(
+  Fig_bony_fish_leg,
+  bony_fish_legend,
+  align = "v",
+  nrow = 2,
+  ncol = 1,
+  rel_heights = c(3,1),
+  scale =  1
+) 
+
+#Fig_bony_fish_leg2
+
+ggsave(plot = Fig_bony_fish_leg2,
+       device = "png",
+       filename = file.path("products/figures/Fig_bony_fish.png"),
+       dpi = 600,
+       width = 7,
+       height = 5,
+       scale = 2,
+       units = "in")
 ```
 
 ### Marine Mammals
