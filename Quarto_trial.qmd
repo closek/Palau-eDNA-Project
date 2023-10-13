@@ -552,12 +552,19 @@ sfCon = subset_taxa(sf, Class=="Chondrichthyes")
 library(cowplot)
 library(viridisLite)
 
+# reorder s4 phyloseq object Sample data by Near_or_Offshore
+# data_to_rearrange <- sfAct@sam_data$Sample
+# data_to_order_by <- sfAct@sam_data$Near_or_Offshore
+# ordering <- order(data_to_order_by)
+# sfAct@sam_data$Sample <- data_to_rearrange[ordering]
+
+
 fish_color <- viridis(n = 90, option = "turbo")
 
 Fig_bony_fish <- plot_bar(sfAct, fill = "Family") +
   theme_classic() +
   theme(axis.title.x = element_blank(),
-        axis.text = element_blank(),
+        axis.text.x = element_blank(),
         axis.line.x.bottom = element_blank(),
         axis.ticks.x = element_blank(),
         legend.position="bottom") +
