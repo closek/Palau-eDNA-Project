@@ -617,7 +617,7 @@ plot_bar(sfAct, fill = "Family")
 dev.off()
 ```
 
-## Marine Chondrichthyes (Sharks & Rays)
+### Marine Chondrichthyes (Sharks & Rays)
 
 ```{r}
 plot_bar(sfCon, fill = "Species")
@@ -641,6 +641,7 @@ print(sf10off)
 
 ```
 
+###Subsetting and pruning Nearshore and Offshore sample sets
 ```{r}
 sample_variables(physeq2)
 
@@ -651,5 +652,84 @@ sfNearshore
 
 sfOffshore <- subset_samples(sf, Near_or_Offshore == "Offshore")
 sfOffshore
+
+#test <- phyloseq::prune_samples(sample_sums(sfNearshore)>=1, sfNearshore)
+#test
+#sfNearshore
+
+#test2 <- phyloseq::prune_samples(sample_sums(sfOffshore)>=1, sfOffshore)
+#test2
+#sfOffshore
+
+sfNearshore <- phyloseq::prune_taxa(taxa_sums(sfNearshore)>=1, sfNearshore)
 sfNearshore
+
+sfOffshore <- phyloseq::prune_taxa(taxa_sums(sfOffshore)>=1, sfOffshore)
+sfOffshore
+
+sfNearshore
+sfOffshore
 ```
+###Family counts of physeq2 object (sf)
+```{r}
+get_taxa_unique(sf, "Family")
+#93
+get_taxa_unique(sfNearshore, "Family")
+#79
+get_taxa_unique(sfOffshore, "Family")
+#53
+```
+### Genus counts of physeq2 object (sf)
+```{r}
+get_taxa_unique(sf, "Genus")
+#260
+get_taxa_unique(sfNearshore, "Genus")
+#232
+get_taxa_unique(sfOffshore, "Genus")
+#83
+```
+
+### Species counts of physeq2 object (sf)
+```{r}
+get_taxa_unique(sf, "Species")
+#389
+get_taxa_unique(sfNearshore, "Species")
+#346
+get_taxa_unique(sfOffshore, "Species")
+#81
+```
+
+###Top 
+```{r}
+top5sf_species <- sort(tapply(taxa_sums(sf), tax_table(sf) [, "Family"], sum), decreasing = TRUE)[1:5]
+
+names(sort(taxa_sums(sf), decreasing = TRUE)[1:10])
+
+```
+
+### Top Species
+```{r}
+devtools::install_github("gmteunisse/fantaxtic")
+require("fantaxtic")
+
+top10sf_species <- top_taxa(sf, 
+                  tax_level = "Species",
+                  n_taxa = 10,
+                  grouping = "Near_or_Offshore")
+top10sf_species
+```
+### Top Nearshore Species
+```{r}
+top10sfNear_species <- top_taxa(sfNearshore, 
+                  tax_level = "Species",
+                  n_taxa = 10)
+top10sfNear_species
+```
+### Top Offshore Species
+```{r}
+top10sfOff_species <- top_taxa(sfOffshore, 
+                  tax_level = "Species",
+                  n_taxa = 10)
+top10sfOff_species
+```
+
