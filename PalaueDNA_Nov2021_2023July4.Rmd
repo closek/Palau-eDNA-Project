@@ -427,7 +427,7 @@ po +facet_wrap(~Zone)
 sf = filter_taxa(physeq2, function(x) sd(x)/mean(x) > 3.0, TRUE)
 sfAct = subset_taxa(sf, Class=="Actinopteri")
 sfMam = subset_taxa(sf, Class=="Mammalia")
-sfCon = sunset_taxa(sf, Class=="Chondrichthyes")
+sfCon = sunbset_taxa(sf, Class=="Chondrichthyes")
 ```
 
 ##Fish
