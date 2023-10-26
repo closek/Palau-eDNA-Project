@@ -42,7 +42,7 @@ The `echo: false` option disables the printing of code (only output is displayed
 #install.packages("here")
 #install.packages("phyloseq")
 #install.packages("owmr")
-library(tidyverse)
+library(tidyverse) # this include tidyr, ggplot2, dplyr
 library(tidyr)
 library(ggplot2)
 library(dplyr)
