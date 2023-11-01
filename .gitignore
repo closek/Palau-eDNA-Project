@@ -11,6 +11,8 @@
 /data/*
 # except hidden .gitkeep file - this keeps folder (not contents) visable
 !/data/.gitkeep
+!data/raw/.gitkeep
+!data/processed/.gitkeep
 
 # analysis output folder
 /products/*
