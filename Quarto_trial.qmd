@@ -19,6 +19,7 @@ editor_options:
   chunk_output_type: inline
 execute: 
   echo: false
+  warning: false
 ---
 
 # Document Purpose
@@ -96,12 +97,14 @@ devtools::install_github("r-lib/conflicted")
 ```{r file-directories-paths}
 # create file paths to folders within the project for easy & consistent reference throughout the analysis
 
-# path to folder that contains all data
-dir_data <- file.path("./data/")
-# path to folder containing outputs from code
-dir_products <- file.path("./products/")
-# path to code scripts
-dir_scripts <- file.path("./scripts/")
+# path to raw data folder
+dir_data_raw <- file.path("./data/raw")
+# path to processed / clean data folder
+dir_data_proc <- file.path("./data/processed")
+# path to code outputs folder
+dir_products <- file.path("./products")
+# path to code scripts folder
+dir_scripts <- file.path("./scripts")
 
 ```
 
@@ -164,14 +167,7 @@ esv_clean_data <- left_joined_unite %>%
     values_from = "obs"
   )
 
-# save clean data
-write_csv(esv_clean_data, file = file.path(dir_products, "esv_clean_data_rv.csv"))
-
-```
-
-### Identify and verify that higher taxonomic rankings check out
-
-```{r}
+## Identify and verify that higher taxonomic rankings check out
 unique(esv_clean_data$Phylum)
 #Should only bring back Chordata
 #brings back: "Chordata"    ""
@@ -181,33 +177,47 @@ unique(esv_clean_data$Class)
 #"Actinopteri"    ""               "Mammalia" (n=3spp - false killer whale, spinner dolphin, and pantropical spotted dolphin)      "Chondrichthyes" (n=1spp - Blue shark), "Aves" (n=1spp ~ game fowl/pheasant, chicken)           "Amphibia"  (n=1spp - giant slamander)
 #Select for only Classes: Actinopteri and Mammalia, which will remove Classes: Aves and Amphibia, as well as the unannotated ESVs 
 #Within Mammalia remove non-marine mammals in  Family: Bovidae, Suidae, Canidae, Felindae, Hominidae and Order: Primates
+
+# save clean data
+write_csv(esv_clean_data, file = file.path(dir_data_proc, "esv_clean_data_rv.csv"))
+
 ```
 
-### Create Nearshore & Offshore dataframes
+## Create Nearshore & Offshore dataframes
 
-```{r}
-offshore_esv <- esv_clean_data %>% select(2, 6, 7, 8, 9, 10, contains('COS'), contains('AFZ'), contains('DFZ'), contains('NMS'))
+```{r create-nearshore-offshore-data}
+# read in clean data 
+#(don't have to run clean-data code chunk more than once after clean data is saved, can start here)
+esv_clean_data_df <- read_csv(file.path(dir_data_proc, "esv_clean_data_rv.csv"))
 
-nearshore_esv <- esv_clean_data %>% select(2, 6, 7, 8, 9, 10, contains('COS'), contains('SHR'), contains('LGN'), contains('FRR'))
+offshore_esv <- esv_clean_data_df %>% 
+  select(2, 6, 7, 8, 9, 10, contains('COS'), contains('AFZ'), contains('DFZ'), contains('NMS'))
 
-# general and transferable file saving
-write_csv(offshore_esv, file = file.path("products/offshore_esv.csv"))
-write_csv(nearshore_esv, file = file.path("products/nearshore_esv.csv"))
+nearshore_esv <- esv_clean_data_df %>% 
+  select(2, 6, 7, 8, 9, 10, contains('COS'), contains('SHR'), contains('LGN'), contains('FRR'))
+
+# save files
+write_csv(offshore_esv, file = file.path(dir_data_proc, "offshore_esv.csv"))
+write_csv(nearshore_esv, file = file.path(dir_data_proc, "nearshore_esv.csv"))
 ```
 
 ### Create Nearshore & Offshore species lists
 
 ```{r}
-offshore_esv_sp <- esv_clean_data %>% select(2, 10, contains('COS'), contains('AFZ'), contains('DFZ'), contains('NMS'))
+offshore_esv_sp <- esv_clean_data_df %>% 
+  select(2, 10, contains('COS'), contains('AFZ'), contains('DFZ'), contains('NMS'))
 
-nearshore_esv_sp <- esv_clean_data %>% select(2, 10, contains('COS'), contains('SHR'), contains('LGN'), contains('FRR'))
+nearshore_esv_sp <- esv_clean_data_df %>% 
+  select(2, 10, contains('COS'), contains('SHR'), contains('LGN'), contains('FRR'))
 
-write_csv(offshore_esv_sp, file = file.path("products/offshore_esv_sp.csv"))
-write_csv(nearshore_esv_sp, file = file.path("products/nearshore_esv_sp.csv"))
+write_csv(offshore_esv_sp, file = file.path(dir_data_proc, "offshore_esv_sp.csv"))
+write_csv(nearshore_esv_sp, file = file.path(dir_data_proc, "nearshore_esv_sp.csv"))
 
 ```
 
 ### Unique nearshore species
+
+#### Thea stopped here with cleanup
 
 ```{r}
 ns_esv <- nearshore_esv[rowSums(nearshore_esv==0, na.rm=TRUE)<ncol(nearshore_esv), ]
