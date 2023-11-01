@@ -1,7 +1,7 @@
 ---
-title: "PalaueDNA_Nov2021"
+title: "Palau eDNA Report Template"
 author: 
-  - name: "Collin Closek"
+  - name: "Insert your name here"
 date: "`r Sys.Date()`"
 format: 
   html:
@@ -19,15 +19,26 @@ editor_options:
   chunk_output_type: inline
 ---
 
-## Quarto trial with the Palau eDNA Nov 2021 dataset
+## Document Purpose
+
+This document is a template for analysis and reporting eDNA results. This file is a Quarto document (a newer version of a Rmarkdown file <https://quarto.org/docs/faq/rmarkdown.html>) that can be opened in Rstudio and used to run code and build a html version of the report. The authors intended this file and larger R project folders & files to document analysis steps, make analyses reproducible, and make future analyses smoother and quicker to run.
+
+There are three components to this document:
+
+1.  [YAML (yet another markdown language) header]{.underline} - the code contained at the top of this document bounded by a set of `---` marks. This is a place to store document metadata and instructions for how the rest of the quarto doc should run code chunks and format rendered documents. See here for more information --\> <https://quarto.org/docs/authoring/front-matter.html>. We currently have the YAML set so when you Render this document a self-contained .html document will be created, this file format and formatting options can be further customized.
+
+2.  [Code chunks]{.underline} - code chunks are like mini code scripts. In a quarto doc you can run these individually by clicking on the green arrow/triangle in the upper right corner of the chunk OR using your "run code" shortcut. These chunks are allow to user to write text inbetween code, and provide instructions on how the code should be incorporated into the rendered document, including how figures should be displayed. See here for more information --\> <https://quarto.org/docs/computations/execution-options.html>
+
+3.  [Markdown]{.underline} - This bullet list is written in markdown. Markdown is a simple text and formatting language. Use this to write text in the rendered report document. Here is a quick guide to markdown syntax --<https://www.markdownguide.org/basic-syntax/>. You can also use values and/or objects generated in your code to populate in your markdown text, see here ---\> <https://www.earthdatascience.org/courses/earth-analytics/multispectral-remote-sensing-modis/add-variables-to-rmarkdown-report/>
 
 ```{r}
  #| label: setup
  #| echo: false
  #| warning: false
-```
 
-The `echo: false` option disables the printing of code (only output is displayed in rendered html).
+# The echo: false option disables the printing of code (only output is displayed in rendered html).
+
+```
 
 ### Load required packages
 
@@ -642,6 +653,7 @@ print(sf10off)
 ```
 
 ###Subsetting and pruning Nearshore and Offshore sample sets
+
 ```{r}
 sample_variables(physeq2)
 
@@ -670,7 +682,9 @@ sfOffshore
 sfNearshore
 sfOffshore
 ```
+
 ###Family counts of physeq2 object (sf)
+
 ```{r}
 get_taxa_unique(sf, "Family")
 #93
@@ -679,7 +693,9 @@ get_taxa_unique(sfNearshore, "Family")
 get_taxa_unique(sfOffshore, "Family")
 #53
 ```
+
 ### Genus counts of physeq2 object (sf)
+
 ```{r}
 get_taxa_unique(sf, "Genus")
 #260
@@ -690,6 +706,7 @@ get_taxa_unique(sfOffshore, "Genus")
 ```
 
 ### Species counts of physeq2 object (sf)
+
 ```{r}
 get_taxa_unique(sf, "Species")
 #389
@@ -699,7 +716,8 @@ get_taxa_unique(sfOffshore, "Species")
 #81
 ```
 
-###Top 
+###Top
+
 ```{r}
 top5sf_species <- sort(tapply(taxa_sums(sf), tax_table(sf) [, "Family"], sum), decreasing = TRUE)[1:5]
 
@@ -708,6 +726,7 @@ names(sort(taxa_sums(sf), decreasing = TRUE)[1:10])
 ```
 
 ### Top Species
+
 ```{r}
 devtools::install_github("gmteunisse/fantaxtic")
 require("fantaxtic")
@@ -718,18 +737,21 @@ top10sf_species <- top_taxa(sf,
                   grouping = "Near_or_Offshore")
 top10sf_species
 ```
+
 ### Top Nearshore Species
+
 ```{r}
 top10sfNear_species <- top_taxa(sfNearshore, 
                   tax_level = "Species",
                   n_taxa = 10)
 top10sfNear_species
 ```
+
 ### Top Offshore Species
+
 ```{r}
 top10sfOff_species <- top_taxa(sfOffshore, 
                   tax_level = "Species",
                   n_taxa = 10)
 top10sfOff_species
 ```
-
