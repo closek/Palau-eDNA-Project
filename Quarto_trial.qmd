@@ -17,42 +17,58 @@ code-fold: true
 editor: visual
 editor_options: 
   chunk_output_type: inline
+execute: 
+  echo: false
 ---
 
-## Document Purpose
+# Document Purpose
 
-This document is a template for analysis and reporting eDNA results. This file is a Quarto document (a newer version of a Rmarkdown file <https://quarto.org/docs/faq/rmarkdown.html>) that can be opened in Rstudio and used to run code and build a html version of the report. The authors intended this file and larger R project folders & files to document analysis steps, make analyses reproducible, and make future analyses smoother and quicker to run.
+This document is a template for analysis and reporting eDNA results. This file is a Quarto document (a newer version of a Rmarkdown file [Intro to a Quarto doc](https://quarto.org/docs/faq/rmarkdown.html){.uri}) that can be opened in Rstudio and used to run code and build a html version of the report. The authors intended this file and larger R project folders & files to document analysis steps, make analyses reproducible, and make future analyses smoother and quicker to run.
 
 There are three components to this document:
 
-1.  [YAML (yet another markdown language) header]{.underline} - the code contained at the top of this document bounded by a set of `---` marks. This is a place to store document metadata and instructions for how the rest of the quarto doc should run code chunks and format rendered documents. See here for more information --\> <https://quarto.org/docs/authoring/front-matter.html>. We currently have the YAML set so when you Render this document a self-contained .html document will be created, this file format and formatting options can be further customized.
+1.  **YAML (yet another markdown language) header** - the code contained at the top of this document bounded by a set of `---` marks. This is a place to store document metadata and instructions for how the rest of the quarto doc should run code chunks and format rendered documents. See here for more information --\> [Authoring Docs](https://quarto.org/docs/authoring/front-matter.html){.uri}. We currently have the YAML set so when you Render this document a self-contained .html document will be created, this file format and formatting options can be further customized.
 
-2.  [Code chunks]{.underline} - code chunks are like mini code scripts. In a quarto doc you can run these individually by clicking on the green arrow/triangle in the upper right corner of the chunk OR using your "run code" shortcut. These chunks are allow to user to write text inbetween code, and provide instructions on how the code should be incorporated into the rendered document, including how figures should be displayed. See here for more information --\> <https://quarto.org/docs/computations/execution-options.html>
+2.  **Code chunks** - code chunks are like mini code scripts. In a quarto doc you can run these individually by clicking on the green arrow/triangle in the upper right corner of the chunk OR using your "run code" shortcut. These chunks are allow to user to write text in between code, and provide instructions on how the code should be incorporated into the rendered document, including how figures should be displayed. See here for more information --\> [Code chunk options (work in both quarto and Rmarkdown docs)](https://quarto.org/docs/computations/execution-options.html){.uri}
 
-3.  [Markdown]{.underline} - This bullet list is written in markdown. Markdown is a simple text and formatting language. Use this to write text in the rendered report document. Here is a quick guide to markdown syntax --<https://www.markdownguide.org/basic-syntax/>. You can also use values and/or objects generated in your code to populate in your markdown text, see here ---\> <https://www.earthdatascience.org/courses/earth-analytics/multispectral-remote-sensing-modis/add-variables-to-rmarkdown-report/>
+3.  **Markdown** - This bullet list is written in markdown. Markdown is a simple text and formatting language. Use this to write text in the rendered report document. Here is a quick guide to markdown syntax --\> [Markdown cheat sheet](https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf){.uri}. You can also use values and/or objects generated in your code to populate in your markdown text, see here ---\> [How to use a code value in markdown text](https://www.earthdatascience.org/courses/earth-analytics/multispectral-remote-sensing-modis/add-variables-to-rmarkdown-report/){.uri}
+
+## Code Chunk Example
+
+Below is an example of a code chunk that can run R code. You can set execution options in the YAML (`execute:`)that will be the default options for every code chunk, or you can set them in individual code chunks. More details here --\> <https://quarto.org/docs/computations/execution-options.html>
 
 ```{r}
- #| label: setup
- #| echo: false
+ #| label: chunk title
+ #| echo: true
  #| warning: false
 
-# The echo: false option disables the printing of code (only output is displayed in rendered html).
+# here is example R code. To write comments within a code chunk, use a # at the beginning of the line, lines with # will not be run within a code chunk.
+test <- 1 + 1
+test_2 <- test * 6
+test_2
+
+# The coding language is indicated in the very first line, within the curly brackets {}. 
+# Use `#| ` to set options for the individual code chunk below the first line of the code chunk.
+
+# A code chunk execute option example is `echo: false` this disables the printing of code (only output is displayed in rendered html).
 
 ```
 
-### Load required packages
+# Analysis Template
+
+Below is the code required for eDNA analysis 
+
+## Setup Analysis
+
+1) load packages
+2) create paths to folders
+3) load data
+
+We used the `renv` package to manage & record package versions. This may 
 
 ```{r}
-#| label: load packages
-#| include: true
+#| label: load-packages
 
-#install.packages("tidyverse")
-#install.packages("vegan")
-#install.packages("devtools")
-#devtools::install_github("rlbarter/superheat")
-#install.packages("here")
-#install.packages("phyloseq")
-#install.packages("owmr")
 library(tidyverse) # this include tidyr, ggplot2, dplyr
 library(tidyr)
 library(ggplot2)
@@ -60,43 +76,47 @@ library(dplyr)
 library(vegan)
 library(data.table)
 library(superheat)
-
-
+library(calecopal)
+library(cowplot)
+library(fantaxtic)
+library(ranacapa)
 
 #devtools::install_github("joey711/phyloseq")
 library(phyloseq)
 packageVersion("phyloseq")
+
 library(owmr)
-
-#if(!requireNamespace("BiocManager", quietly = TRUE)){
-#  install.packages("BiocManager")
-#  }
-#BiocManager::install("multtest")
-
-
-#if (!requireNamespace("devtools", quietly = TRUE))
-#      install.packages('devtools')
 library(devtools)
 
 #BiocManager::install("MicrobiotaProcess")
 library(MicrobiotaProcess)
 library(patchwork)
 
-library(here) #attach at the end of pkgs or use conflicted pkg
-
 devtools::install_github("r-lib/conflicted")
 
 ```
 
-### Load data
+```{r}
+#| label: file-directories-paths
+
+# create file paths to certain folders within the project for easy & consistent reference
+
+# path to folder that contains all data
+dir_data <- file.path("./data/")
+# path to folder containing outputs from code
+dir_products <- file.path("./products/")
+# path to code scripts
+dir_scripts <- file.path("./scripts/")
+
+```
 
 ```{r}
-#esv_data_all <- (read.delim("./data/JVB1710-MiFishU-read-data.csv", sep=",", check.names=FALSE, header = TRUE))
+#| label: load-data
 
-esv_data_all <- read.csv(here("data/JVB1710-MiFishU-read-data.csv"),header = TRUE)
+esv_data_all <- read_csv(file.path(dir_data, "JVB1710-MiFishU-read-data.csv"))
 
-#head (esv_data_all)
-#glimpse (esv_data_all)
+# to see a snipet of the data run this in the console 
+#glimpse(esv_data_all)
 ```
 
 ### Remove preliminary run (i.e., remove duplicated samples "S046...1" that have newer ".2" version) & cleanup columns
