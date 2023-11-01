@@ -38,9 +38,9 @@ There are three components to this document:
 Below is an example of a code chunk that can run R code. You can set execution options in the YAML (`execute:`)that will be the default options for every code chunk, or you can set them in individual code chunks. More details here --\> <https://quarto.org/docs/computations/execution-options.html>
 
 ```{r}
- #| label: chunk title
- #| echo: true
- #| warning: false
+#| label: example-code-chunk
+#| echo: true
+#| warning: false
 
 # here is example R code. To write comments within a code chunk, use a # at the beginning of the line, lines with # will not be run within a code chunk.
 test <- 1 + 1
@@ -69,17 +69,16 @@ We used the `renv` package to manage & record package versions. This may
 ```{r}
 #| label: load-packages
 
-library(tidyverse) # this include tidyr, ggplot2, dplyr
-library(tidyr)
-library(ggplot2)
-library(dplyr)
+library(tidyverse) # this include tidyr, ggplot2, dplyr for data manipulation and graphing
 library(vegan)
 library(data.table)
 library(superheat)
-library(calecopal)
-library(cowplot)
+library(calecopal) # color palette
+library(viridisLite) # color blind & gray scale friendly color palette
+library(cowplot) # create graphs with multiple components in a grid
 library(fantaxtic)
 library(ranacapa)
+library(magrittr) # contains pipe function
 
 #devtools::install_github("joey711/phyloseq")
 library(phyloseq)
@@ -99,7 +98,7 @@ devtools::install_github("r-lib/conflicted")
 ```{r}
 #| label: file-directories-paths
 
-# create file paths to certain folders within the project for easy & consistent reference
+# create file paths to folders within the project for easy & consistent reference throughout the analysis
 
 # path to folder that contains all data
 dir_data <- file.path("./data/")
@@ -114,79 +113,75 @@ dir_scripts <- file.path("./scripts/")
 #| label: load-data
 
 esv_data_all <- read_csv(file.path(dir_data, "JVB1710-MiFishU-read-data.csv"))
+# ESV - exact sequence variant
 
-# to see a snipet of the data run this in the console 
+# to see a snipit of the data run this in the console 
 #glimpse(esv_data_all)
 ```
 
-### Remove preliminary run (i.e., remove duplicated samples "S046...1" that have newer ".2" version) & cleanup columns
+
 
 ```{r}
-data <- select(esv_data_all,-c(S046420.1, S046419.1, S046417.1, S046416.1, S046415.1, S046414.1, X))
-data <- data %>%
+#| label: clean-data
+
+#Remove preliminary run (i.e., remove duplicated samples "S046...1" that have newer ".2" version) & cleanup columns
+
+data <- esv_data_all %>% 
+  select(-c(S046420.1, S046419.1, S046417.1, S046416.1, S046415.1, S046414.1, X)) %>%
   rename(
-    Match_percent=X..match,
-    Species_number=X..species
+    Match_percent = X..match,
+    Species_number = X..species
   ) 
 
 #head(data) 
 #glimpse(data)
-```
 
 ### Cobine header row cells into one
+#Takes the following row headers: "TestId", "ESVId", "sequence", "Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species", "% match", "\# species" Merges them into one "MergedID" with the separator ","
 
-Takes the following row headers: "TestId", "ESVId", "sequence", "Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species", "% match", "\# species" Merges them into one "MergedID" with the separator ","
-
-```{r}
 #esv_data_all_mergedrows <- unite(esv_data_all, col='MergedID', c('TestId', 'ESVId', 'sequence', 'Kingdom', 'Phylum', 'Class', 'Order', 'Family', 'Genus', 'Species', '% match', '# species'), sep=',')
-```
 
-### Create long data version
+### Collin - is this relevant to all data? How can we generalize this?
 
-```{r}
-data_long <-
-  data %>%
+data_long <- data %>%
   pivot_longer(
     "S049508.1":"S049391.0",
     names_to = "sample",
     values_to = "obs"
   )
 
-#glimpse(data_long)
-```
+# load in sample key & merge with "long" formatted data
+samples_key_df <- read_csv(file.path(dir_data, "JVB1710-samples_rv3.csv"))
 
-### Bring in samples key & merge with long data
+# join sample keys with data matching by sample
+data_long_key_df <- left_join(data_long, samples_key_df, by = "sample")
 
-```{r}
-samples <- read.csv(here("data/JVB1710-samples_rv3.csv"),header=TRUE)
-glimpse(samples)
+# Create full sample ID - merge original Sample name w/ the JV sample version name
 
-left_joined <- merge(data_long, samples, by = "sample")
-#glimpse(left_joined)
-```
-
-### Create full sample ID - merge original Sample name w/ the JV sample version name
-
-```{r}
-left_joined_unite <- left_joined %>%
+##### Collin & Althea - convert this to left_join - don't want to do without data loading
+left_joined_unite <- data_long_key_df %>%
   unite(col="ID_v", SampleID, sample, sep= "-", 
         remove = TRUE)
 
-#glimpse(left_joined_unite)
-```
-
-### Bring data frame back into Wide Format
-
-```{r}
-esv_read_data <- 
-  left_joined_unite %>% 
+# Convert data frame back into "Wide" Format
+esv_read_data <- left_joined_unite %>% 
   pivot_wider(
     names_from = "ID_v", 
     values_from = "obs"
   )
 
+# save clean data
+write_csv(esv_read_data, file = file.path(dir_products, "esv_read_data_rv.csv"))
+
+```
+
+
+
+```{r}
+
+
 # more generalizable saving - path starts a Rproj root (makes code more transferable)
- write_csv(esv_read_data, file = file.path("products/esv_read_data_rv.csv"))
+
 ```
 
 ### Identify and verify that higher taxonomic rankings check out
