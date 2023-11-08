@@ -72,9 +72,9 @@ library(data.table)
 library(superheat)
 library(calecopal) # color palette
 library(viridisLite) # color blind & gray scale friendly color palette
+install.packages("cowplot")
 library(cowplot) # create graphs with multiple components in a grid
 library(fantaxtic)
-library(ranacapa)
 library(magrittr) # contains pipe function
 
 #devtools::install_github("joey711/phyloseq")
@@ -97,6 +97,8 @@ devtools::install_github("r-lib/conflicted")
 ```{r file-directories-paths}
 # create file paths to folders within the project for easy & consistent reference throughout the analysis
 
+#path to data folder
+dir_data <- file.path("./data")
 # path to raw data folder
 dir_data_raw <- file.path("./data/raw")
 # path to processed / clean data folder
@@ -114,7 +116,7 @@ dir_scripts <- file.path("./scripts")
 esv_data_all <- read_csv(file.path(dir_data, "JVB1710-MiFishU-read-data.csv"))
 # ESV - exact sequence variant
 
-# to see a snipit of the data run this in the console 
+# to see a snippet of the data run this in the console 
 #glimpse(esv_data_all)
 ```
 
@@ -139,6 +141,9 @@ data <- esv_data_all %>%
 #esv_data_all_mergedrows <- unite(esv_data_all, col='MergedID', c('TestId', 'ESVId', 'sequence', 'Kingdom', 'Phylum', 'Class', 'Order', 'Family', 'Genus', 'Species', '% match', '# species'), sep=',')
 
 ### Collin - is this relevant to all data? How can we generalize this?
+
+####Althea - The S046420.1 is the sample name that Jonah Ventures gave, for this set of data. So, these steps would need to be modified for each sample set.
+
 
 data_long <- data %>%
   pivot_longer(
