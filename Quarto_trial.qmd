@@ -97,8 +97,6 @@ devtools::install_github("r-lib/conflicted")
 ```{r file-directories-paths}
 # create file paths to folders within the project for easy & consistent reference throughout the analysis
 
-#path to data folder
-dir_data <- file.path("./data")
 # path to raw data folder
 dir_data_raw <- file.path("./data/raw")
 # path to processed / clean data folder
@@ -113,10 +111,10 @@ dir_scripts <- file.path("./scripts")
 3) load data
 
 ```{r load-data}
-esv_data_all <- read_csv(file.path(dir_data, "JVB1710-MiFishU-read-data.csv"))
+esv_data_all <- read_csv(file.path(dir_data_raw, "JVB1710-MiFishU-read-data.csv"))
 # ESV - exact sequence variant
 
-# to see a snippet of the data run this in the console 
+# to see a snippet of the data run the following code in the console 
 #glimpse(esv_data_all)
 ```
 
@@ -126,10 +124,10 @@ esv_data_all <- read_csv(file.path(dir_data, "JVB1710-MiFishU-read-data.csv"))
 #Remove preliminary run (i.e., remove duplicated samples "S046...1" that have newer ".2" version) & cleanup columns
 
 data <- esv_data_all %>% 
-  select(-c(S046420.1, S046419.1, S046417.1, S046416.1, S046415.1, S046414.1, X)) %>%
+  select(-c(S046420.1, S046419.1, S046417.1, S046416.1, S046415.1, S046414.1)) %>%
   rename(
-    Match_percent = X..match,
-    Species_number = X..species
+    Match_percent = `% match`,
+    Species_number = `# species`
   ) 
 
 #head(data) 
@@ -153,7 +151,7 @@ data_long <- data %>%
   )
 
 # load in sample key & merge with "long" formatted data
-samples_key_df <- read_csv(file.path(dir_data, "JVB1710-samples_rv3.csv"))
+samples_key_df <- read_csv(file.path(dir_data_raw, "JVB1710-samples_rv3.csv"))
 
 # join sample keys with data matching by sample
 data_long_key_df <- left_join(data_long, samples_key_df, by = "sample")
@@ -295,7 +293,7 @@ names(esv_clean_data)
 
 #create an OTU/ESV count table
 esv_read_count <- select(esv_clean_data, -c(1))
-esv_read_count <- select(esv_read_count, -c(2:18))
+esv_read_count <- select(esv_read_count, -c(2:19))
 esv_read_count <- data.frame(esv_read_count, row.names = 1)
 #names(esv_read_count)
 #remove_prefix(esv_read_count, c("X")) %>% names()
@@ -314,7 +312,7 @@ ESV <- phyloseq::otu_table(esv_read_count_m, taxa_are_rows = TRUE)
 
 #create a taxonomy table
 esv_read_tax <- select(esv_clean_data, -c(1,3))
-esv_read_tax <- select(esv_read_tax, -c(9:194))
+esv_read_tax <- select(esv_read_tax, -c(9:195))
 esv_read_tax <- data.frame(esv_read_tax, row.names = 1)
 class(esv_read_tax)
 esv_read_tax_m <- as.matrix(esv_read_tax)
