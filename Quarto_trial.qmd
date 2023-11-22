@@ -56,16 +56,27 @@ test_2
 
 # Analysis Template
 
-Below is the code required for eDNA analysis 
+Below is the code required for eDNA analysis
 
 ## Setup Analysis
 
-1) load packages
+1)  load packages
 
-We used the `renv` package to manage & record package versions. This may 
+We used the `renv` package to manage & record package versions. This records the version of R, package versions, and their dependencies into a file `renv.lock` at the root of this `.Rproj`. The purpose of this is to allow users on different computer setups and in the future to reproduce the results of this project in the same way. This is because different package versions can behave differently version to version, and even introduce errors or produced different results. By using the same exact set of package versions that the authors used to write the code, the same results can be reproduced and prevent unintended errors.
+
+`Renv` creates a separate custom project library that is separate from the system library typically used when the `library()` function is called. This means that when you recreate the `renv` project library by calling `renv::restore()` you will likely need to install many packages. Many may be already installed in your system library, but they will need to be installed again into this custom `renv` project library with the exact version recorded in the `renv.lock` file. All files, folders, and scripts within the `.Rproj` will share the `renv` project library.
+
+For more information about `renv` and how to add/update the `renv` project library -> [ ](https://rstudio.github.io/renv/articles/renv.html).
+
+::: callout-warning
+Although this package management strategy is meant to reduce errors among future users, it is not perfect. The authors found that the `renv` project library could not yet be recreated on a M1 chip Apple computer (2023-10).
+:::
 
 ```{r load-packages}
+# load renv packages from project renv.lock file
+renv::restore()
 
+library(renv)
 library(tidyverse) # this include tidyr, ggplot2, dplyr for data manipulation and graphing
 library(vegan)
 library(data.table)
@@ -76,23 +87,19 @@ install.packages("cowplot")
 library(cowplot) # create graphs with multiple components in a grid
 library(fantaxtic)
 library(magrittr) # contains pipe function
-
 #devtools::install_github("joey711/phyloseq")
 library(phyloseq)
 packageVersion("phyloseq")
-
 library(owmr)
 library(devtools)
-
 #BiocManager::install("MicrobiotaProcess")
 library(MicrobiotaProcess)
 library(patchwork)
-
 devtools::install_github("r-lib/conflicted")
 
 ```
 
-2) create paths to folders
+2)  create paths to folders
 
 ```{r file-directories-paths}
 # create file paths to folders within the project for easy & consistent reference throughout the analysis
@@ -105,10 +112,38 @@ dir_data_proc <- file.path("./data/processed")
 dir_products <- file.path("./products")
 # path to code scripts folder
 dir_scripts <- file.path("./scripts")
+# path to images for report
+dir_images <- file.path("./images")
+
+######## create folders if they do not exist
+# data folder
+if (!dir.exists(file.path("./data/"))) {
+  dir.create(file.path("./data/"))
+}
+# raw data folder
+if (!dir.exists(dir_data_raw)) {
+  dir.create(dir_data_raw)
+}
+# processed data folder
+if (!dir.exists(dir_data_proc)) {
+  dir.create(dir_data_proc)
+}
+# outputs folder
+if (!dir.exists(dir_products)) {
+  dir.create(dir_products)
+}
+# scripts folder
+if (!dir.exists(dir_scripts)) {
+  dir.create(dir_scripts)
+}
+# images folder
+if (!dir.exists(dir_images)) {
+  dir.create(dir_images)
+}
 
 ```
 
-3) load data
+3)  load data
 
 ```{r load-data}
 esv_data_all <- read_csv(file.path(dir_data_raw, "JVB1710-MiFishU-read-data.csv"))
@@ -118,7 +153,7 @@ esv_data_all <- read_csv(file.path(dir_data_raw, "JVB1710-MiFishU-read-data.csv"
 #glimpse(esv_data_all)
 ```
 
-4) clean and save analysis data
+4)  clean and save analysis data
 
 ```{r clean-data}
 #Remove preliminary run (i.e., remove duplicated samples "S046...1" that have newer ".2" version) & cleanup columns
