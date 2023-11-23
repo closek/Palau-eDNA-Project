@@ -252,7 +252,7 @@ esv_clean_data_df <- read_csv(file.path(dir_data_proc,
                                         paste0("esv_clean_data_rv_", analysis_date, ".csv")))
 ```
 
-3) Create Nearshore & Offshore dataframes or read in if already exist
+3) Create Nearshore & Offshore dataframes (or load if they already exist)
 
 ```{r create-nearshore-offshore-data}
 # store file names in objects to reuse & reference. Change here if needed, and will be automatically used through out code
@@ -287,7 +287,7 @@ if (!dir.exists(file.path(dir_data_proc, file_nearshore_esv))) {
 
 ```
 
-3) Create Nearshore & Offshore species lists
+3) Create Nearshore & Offshore species lists (or load if they already exist)
 
 ```{r create-near-offshore-species-list}
 # store file names for reuse
@@ -322,10 +322,7 @@ if (!dir.exists(file.path(dir_data_proc, file_nearshore_esv_sp))) {
 
 1) Unique nearshore species
 
-#### Thea stopped here with cleanup
-
-
-```{r}
+```{r unique-nearshore-species}
 ns_esv <- nearshore_esv[rowSums(nearshore_esv==0, na.rm=TRUE)<ncol(nearshore_esv), ]
 #nearshore_esv[rowSums(nearshore_esv[])>0,]
 n_distinct(nearshore_esv$Species)
@@ -336,9 +333,9 @@ unique(nearshore_esv$Species)
 #n_distinct(nearshore_esv_sp_wo0$Species)
 ```
 
-### Unique offshore species
+2) Unique offshore species
 
-```{r}
+```{r unique-offshore-species}
 n_distinct(offshore_esv$Species)
 unique(offshore_esv$Species)
 
@@ -347,13 +344,7 @@ unique(offshore_esv$Species)
 #n_distinct(offshore_esv_sp_wo0$Species)
 ```
 
-### Unique species Nearshore & Offshore
-
-```{r}
-n_distinct(esv_clean_data$Species)
-```
-
-### Unique species
+3) Unique species (Both Nearshore & Offshore)
 
 ```{r}
 #esv_list <- read.csv(here("data/JVB1710-MiFishU-esv-data.csv"),header = TRUE)
