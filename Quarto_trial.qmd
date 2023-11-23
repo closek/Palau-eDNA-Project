@@ -320,7 +320,21 @@ if (!dir.exists(file.path(dir_data_proc, file_nearshore_esv_sp))) {
 
 ## Data Analysis
 
-1) Unique nearshore species
+1) Unique Species
+
+```{r unique-species}
+#esv_list <- read.csv(here("data/JVB1710-MiFishU-esv-data.csv"),header = TRUE)
+#glimpse(esv_list)
+#str(esv_list)
+
+#n_distinct(esv_list$Species)
+#unique(esv_list$Species)
+
+n_distinct(esv_clean_data$Species)
+unique(esv_clean_data$Species)
+```
+
+2) Unique Species - nearshore
 
 ```{r unique-nearshore-species}
 ns_esv <- nearshore_esv[rowSums(nearshore_esv==0, na.rm=TRUE)<ncol(nearshore_esv), ]
@@ -333,7 +347,7 @@ unique(nearshore_esv$Species)
 #n_distinct(nearshore_esv_sp_wo0$Species)
 ```
 
-2) Unique offshore species
+3) Unique Species - offshore
 
 ```{r unique-offshore-species}
 n_distinct(offshore_esv$Species)
@@ -344,23 +358,9 @@ unique(offshore_esv$Species)
 #n_distinct(offshore_esv_sp_wo0$Species)
 ```
 
-3) Unique species (Both Nearshore & Offshore)
+4) Unique Genera
 
-```{r}
-#esv_list <- read.csv(here("data/JVB1710-MiFishU-esv-data.csv"),header = TRUE)
-#glimpse(esv_list)
-#str(esv_list)
-
-#n_distinct(esv_list$Species)
-#unique(esv_list$Species)
-
-n_distinct(esv_clean_data$Species)
-unique(esv_clean_data$Species)
-```
-
-### Unique Genera
-
-```{r}
+```{r unique-genera}
 #n_distinct(esv_list$Genus)
 #unique(esv_list$Genus)
 
@@ -368,9 +368,9 @@ n_distinct(esv_clean_data$Genus)
 unique(esv_clean_data$Genus)
 ```
 
-### Unique Families
+5) Unique Families
 
-```{r}
+```{r unique-families}
 #n_distinct(esv_list$Family)
 #unique(esv_list$Family)
 #unique
