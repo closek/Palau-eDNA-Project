@@ -58,7 +58,7 @@ test_2
 
 Below is the code required for eDNA analysis
 
-## Setup Analysis
+## Setup 
 
 1)  load packages
 
@@ -99,7 +99,7 @@ devtools::install_github("r-lib/conflicted")
 
 ```
 
-2)  create paths to folders
+2)  Create paths to folders
 
 ```{r file-directories-paths}
 # create file paths to folders within the project for easy & consistent reference throughout the analysis
@@ -143,7 +143,14 @@ if (!dir.exists(dir_images)) {
 
 ```
 
-3)  load data
+3) Set analysis date
+
+```{r set-analysis-date}
+# set this variable here, used throughout analysis for file naming. Used to differentiate between analyses using the same analysis template on different data
+analysis_date <- "2021_11"
+```
+
+4)  Load data
 
 ```{r load-data}
 esv_data_all <- read_csv(file.path(dir_data_raw, "JVB1710-MiFishU-read-data.csv"))
@@ -153,7 +160,22 @@ esv_data_all <- read_csv(file.path(dir_data_raw, "JVB1710-MiFishU-read-data.csv"
 #glimpse(esv_data_all)
 ```
 
-4)  clean and save analysis data
+## Clean & save data
+
+1) Clean & organize data
+
+The code chunk below "clean-data" be separated into its own `./scripts/clean_data.R` file and sourced by calling `source(file.path(dir_scripts, clean_data.R)` here. If you are looking save space in this analysis document, or want to reuse this exact same data cleaning protocol in different analysis document. The same goes for "create-nearshore-offshore-data" and "create-near-offshore-species-list" chunks, they could be their own scripts or be added to a clean_data script. If you choose to do this, the "example-source-clean-data" chunk below can be used.
+
+```{r example-source-clean-data}
+# run data cleaning script
+#source(file.path(dir_scripts, "clean_data.R"))
+
+# OR you can choose to only run the script if the output .csv file does not yet exist
+# if (!dir.exists(file.path(dir_data_proc, paste0("esv_clean_data_rv_", analysis_date, ".csv"))) {
+#   source(file.path(dir_scripts, "clean_data.R"))
+# }
+```
+
 
 ```{r clean-data}
 #Remove preliminary run (i.e., remove duplicated samples "S046...1" that have newer ".2" version) & cleanup columns
@@ -216,46 +238,86 @@ unique(esv_clean_data$Class)
 #Select for only Classes: Actinopteri and Mammalia, which will remove Classes: Aves and Amphibia, as well as the unannotated ESVs 
 #Within Mammalia remove non-marine mammals in  Family: Bovidae, Suidae, Canidae, Felindae, Hominidae and Order: Primates
 
-# save clean data
-write_csv(esv_clean_data, file = file.path(dir_data_proc, "esv_clean_data_rv.csv"))
+# save clean data (with analysis date in name)
+write_csv(esv_clean_data, file = file.path(dir_data_proc, paste0("esv_clean_data_rv_", analysis_date ,".csv")))
 
 ```
 
-## Create Nearshore & Offshore dataframes
+2) Read in clean data
+
+```{r read-clean-data}
+# read in clean data - used in next 2 code chunks
+#(don't have to run clean-data code chunk more than once after clean data is saved, can start here)
+esv_clean_data_df <- read_csv(file.path(dir_data_proc, 
+                                        paste0("esv_clean_data_rv_", analysis_date, ".csv")))
+```
+
+3) Create Nearshore & Offshore dataframes
 
 ```{r create-nearshore-offshore-data}
-# read in clean data 
-#(don't have to run clean-data code chunk more than once after clean data is saved, can start here)
-esv_clean_data_df <- read_csv(file.path(dir_data_proc, "esv_clean_data_rv.csv"))
+# if esv file for this analysis date already exists: do nothing
+# if esv file does not exist: run code and save
 
-offshore_esv <- esv_clean_data_df %>% 
-  select(2, 6, 7, 8, 9, 10, contains('COS'), contains('AFZ'), contains('DFZ'), contains('NMS'))
+##### offshore
+if (!dir.exists(file.path(dir_data_proc, 
+                          paste0("offshore_esv_", analysis_date, ".csv")))) {
+  # create offshore_esv dataframe
+  offshore_esv <- esv_clean_data_df %>% 
+    select(2, 6, 7, 8, 9, 10, contains('COS'), contains('AFZ'), contains('DFZ'), contains('NMS'))
+  # save dataframe as .csv
+  write_csv(offshore_esv, 
+            file = file.path(dir_data_proc,
+                             paste0("offshore_esv_", analysis_date, ".csv")))
+}
 
-nearshore_esv <- esv_clean_data_df %>% 
-  select(2, 6, 7, 8, 9, 10, contains('COS'), contains('SHR'), contains('LGN'), contains('FRR'))
+###### nearshore
+if (!dir.exists(file.path(dir_data_proc, 
+                          paste0("nearshore_esv_", analysis_date, ".csv")))) {
+  # create offshore_esv dataframe
+  nearshore_esv <- esv_clean_data_df %>% 
+    select(2, 6, 7, 8, 9, 10, contains('COS'), contains('SHR'), contains('LGN'), contains('FRR'))
+  # save dataframe as .csv
+  write_csv(nearshore_esv, 
+            file = file.path(dir_data_proc,
+                             paste0("nearshore_esv_", analysis_date, ".csv")))
+}
 
-# save files
-write_csv(offshore_esv, file = file.path(dir_data_proc, "offshore_esv.csv"))
-write_csv(nearshore_esv, file = file.path(dir_data_proc, "nearshore_esv.csv"))
 ```
 
-### Create Nearshore & Offshore species lists
+3) Create Nearshore & Offshore species lists
 
-```{r}
-offshore_esv_sp <- esv_clean_data_df %>% 
-  select(2, 10, contains('COS'), contains('AFZ'), contains('DFZ'), contains('NMS'))
+```{r create-near-offshore-species-list}
+# similar to code chunk above - if output file already exists, code will not run
 
-nearshore_esv_sp <- esv_clean_data_df %>% 
-  select(2, 10, contains('COS'), contains('SHR'), contains('LGN'), contains('FRR'))
+#### offshore species
+if (!dir.exists(file.path(dir_data_proc, paste0("offshore_esv_sp_", analysis_date, ".csv")))) {
+  # create offshore species list
+  offshore_esv_sp <- esv_clean_data_df %>% 
+    select(2, 10, contains('COS'), contains('AFZ'), contains('DFZ'), contains('NMS'))
+  # save dataframe as .csv
+  write_csv(offshore_esv_sp, 
+            file = file.path(dir_data_proc, 
+                             paste0("offshore_esv_sp_", analysis_date,".csv")))
+}
 
-write_csv(offshore_esv_sp, file = file.path(dir_data_proc, "offshore_esv_sp.csv"))
-write_csv(nearshore_esv_sp, file = file.path(dir_data_proc, "nearshore_esv_sp.csv"))
-
+#### nearshore species
+if (!dir.exists(file.path(dir_data_proc, paste0("nearshore_esv_sp_", analysis_date, ".csv")))) {
+  #create nearshore species list
+  nearshore_esv_sp <- esv_clean_data_df %>% 
+    select(2, 10, contains('COS'), contains('SHR'), contains('LGN'), contains('FRR'))
+  # save dataframe as .csv
+  write_csv(nearshore_esv_sp, 
+            file = file.path(dir_data_proc, 
+                             paste0("nearshore_esv_sp_", analysis_date, ".csv")))
+}
 ```
+
+## Data Analysis
 
 ### Unique nearshore species
 
 #### Thea stopped here with cleanup
+
 
 ```{r}
 ns_esv <- nearshore_esv[rowSums(nearshore_esv==0, na.rm=TRUE)<ncol(nearshore_esv), ]
