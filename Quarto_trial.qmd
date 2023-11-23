@@ -150,7 +150,7 @@ if (!dir.exists(dir_images)) {
 analysis_date <- "2021_11"
 ```
 
-4)  Load data
+4) Load data
 
 ```{r load-data}
 esv_data_all <- read_csv(file.path(dir_data_raw, "JVB1710-MiFishU-read-data.csv"))
@@ -252,69 +252,75 @@ esv_clean_data_df <- read_csv(file.path(dir_data_proc,
                                         paste0("esv_clean_data_rv_", analysis_date, ".csv")))
 ```
 
-3) Create Nearshore & Offshore dataframes
+3) Create Nearshore & Offshore dataframes or read in if already exist
 
 ```{r create-nearshore-offshore-data}
-# if esv file for this analysis date already exists: do nothing
+# store file names in objects to reuse & reference. Change here if needed, and will be automatically used through out code
+file_offshore_esv <- paste0("offshore_esv_", analysis_date, ".csv")
+file_nearshore_esv <- paste0("nearshore_esv_", analysis_date, ".csv")
+
+
 # if esv file does not exist: run code and save
+# if esv file does exist: load file
 
 ##### offshore
-if (!dir.exists(file.path(dir_data_proc, 
-                          paste0("offshore_esv_", analysis_date, ".csv")))) {
+if (!dir.exists(file.path(dir_data_proc, file_offshore_esv))) {
   # create offshore_esv dataframe
   offshore_esv <- esv_clean_data_df %>% 
     select(2, 6, 7, 8, 9, 10, contains('COS'), contains('AFZ'), contains('DFZ'), contains('NMS'))
   # save dataframe as .csv
   write_csv(offshore_esv, 
-            file = file.path(dir_data_proc,
-                             paste0("offshore_esv_", analysis_date, ".csv")))
-}
+            file = file.path(dir_data_proc, file_offshore_esv))
+  # if file exists - read it in
+} else (offshore_esv <- read_csv(file.path(dir_data_proc, file_offshore_esv)) )
 
 ###### nearshore
-if (!dir.exists(file.path(dir_data_proc, 
-                          paste0("nearshore_esv_", analysis_date, ".csv")))) {
+if (!dir.exists(file.path(dir_data_proc, file_nearshore_esv))) {
   # create offshore_esv dataframe
   nearshore_esv <- esv_clean_data_df %>% 
     select(2, 6, 7, 8, 9, 10, contains('COS'), contains('SHR'), contains('LGN'), contains('FRR'))
   # save dataframe as .csv
   write_csv(nearshore_esv, 
-            file = file.path(dir_data_proc,
-                             paste0("nearshore_esv_", analysis_date, ".csv")))
-}
+            file = file.path(dir_data_proc, file_nearshore_esv))
+  # if file exists - read it in
+} else (nearshore_esv <- read_csv(file.path) )
 
 ```
 
 3) Create Nearshore & Offshore species lists
 
 ```{r create-near-offshore-species-list}
-# similar to code chunk above - if output file already exists, code will not run
+# store file names for reuse
+file_offshore_esv_sp <- paste0("offshore_esv_sp_", analysis_date, ".csv")
+file_nearshore_esv_sp <- paste0("nearshore_esv_sp_", analysis_date, ".csv")
+# similar to code chunk above - if output file already exists, data will load, if not data created
 
 #### offshore species
-if (!dir.exists(file.path(dir_data_proc, paste0("offshore_esv_sp_", analysis_date, ".csv")))) {
+if (!dir.exists(file.path(dir_data_proc, file_offshore_species))) {
   # create offshore species list
   offshore_esv_sp <- esv_clean_data_df %>% 
     select(2, 10, contains('COS'), contains('AFZ'), contains('DFZ'), contains('NMS'))
   # save dataframe as .csv
   write_csv(offshore_esv_sp, 
-            file = file.path(dir_data_proc, 
-                             paste0("offshore_esv_sp_", analysis_date,".csv")))
-}
+            file = file.path(dir_data_proc, file_offshore_species))
+  # if file exists - read it in
+} else (offshore_esv_sp <- read.csv(file.path(dir_data_proc, file_offshore_esv_sp)))
 
 #### nearshore species
-if (!dir.exists(file.path(dir_data_proc, paste0("nearshore_esv_sp_", analysis_date, ".csv")))) {
+if (!dir.exists(file.path(dir_data_proc, file_nearshore_esv_sp))) {
   #create nearshore species list
   nearshore_esv_sp <- esv_clean_data_df %>% 
     select(2, 10, contains('COS'), contains('SHR'), contains('LGN'), contains('FRR'))
   # save dataframe as .csv
   write_csv(nearshore_esv_sp, 
-            file = file.path(dir_data_proc, 
-                             paste0("nearshore_esv_sp_", analysis_date, ".csv")))
-}
+            file = file.path(dir_data_proc, file_nearshore_esv_sp))
+  # if file exists - read it in
+} else (nearshore_esv_sp <- read_csv(file.path(dir_data_proc, nearshore_esv_sp)))
 ```
 
 ## Data Analysis
 
-### Unique nearshore species
+1) Unique nearshore species
 
 #### Thea stopped here with cleanup
 
