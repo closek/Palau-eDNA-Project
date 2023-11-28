@@ -23,16 +23,22 @@ If your README is long, add a table of contents to make it easy for users to fin
 Provide an overview of the directory structure and files, for example:
 
 ```bash
-├── README.md
 ├── data
-├── gen
-│   ├── analysis
-│   ├── data-preparation
-│   └── paper
-└── src
-    ├── analysis
-    ├── data-preparation
-    └── paper
+│   ├── raw
+│   └── processed
+├── products
+├── renv
+│   ├── activate.R
+│   └── setttings.json
+├── scripts
+│   └── color_palette.R
+├── .Rprofile
+├── .gitignore
+├── Quarto_trial.html
+├── Quarto_trial.qmd
+├── README.md
+└── renv.lock
+
 ```
 ## Installation
 
