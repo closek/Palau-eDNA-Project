@@ -11,8 +11,6 @@ Provide a short description explaining the what, why, and how of your project. U
 
 ## Table of Contents (Optional)
 
-If your README is long, add a table of contents to make it easy for users to find what they need.
-
 - [Repository overview](#repository-overview)
 - [Installation](#installation)
 - [Usage](#usage)
@@ -21,7 +19,7 @@ If your README is long, add a table of contents to make it easy for users to fin
 
 ## Repository overview
 
-Provide an overview of the directory structure and files, for example:
+The directory structure and files:
 
 ```bash
 ├── data
@@ -43,7 +41,6 @@ Provide an overview of the directory structure and files, for example:
 ```
 ## Installation
 
-What are the steps required to install your project? Provide a step-by-step description of how to get the development environment running.
 1) Clone this repository to your local machine (choose one method)
   - In the command line:
 ```bash
@@ -79,8 +76,10 @@ We used the `renv` package to manage & record package versions. This records the
 
 `Renv` creates a separate custom project library that is separate from the system library typically used when the `library()` function is called. This means that when you recreate the `renv` project library by calling `renv::restore()` you will likely need to install many packages. Many may be already installed in your system library, but they will need to be installed again into this custom `renv` project library with the exact version recorded in the `renv.lock` file. All files, folders, and scripts within the `.Rproj` will share the `renv` project library.
 
-For more information about `renv` and how to add/update the `renv` project library -> [https://rstudio.github.io/renv/articles/renv.html ](https://rstudio.github.io/renv/articles/renv.html).
-
+- For more information about `renv` and how to add/update the `renv` project library -> [https://rstudio.github.io/renv/articles/renv.html ](https://rstudio.github.io/renv/articles/renv.html).
+- *Note* You may need to download a different version of R to work with this project
+  - Windows --> [https://cran.r-project.org/bin/windows/base/old/](https://cran.r-project.org/bin/windows/base/old/)
+  - MacOS --> [https://cran-archive.r-project.org/bin/macosx/](https://cran-archive.r-project.org/bin/macosx/)
 
 ## Usage
 
