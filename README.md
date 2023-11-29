@@ -9,7 +9,7 @@ Provide a short description explaining the what, why, and how of your project. U
 - What problem does it solve?
 - What did you learn?
 
-## Table of Contents (Optional)
+## Table of Contents
 
 - [Repository overview](#repository-overview)
 - [Installation](#installation)
