@@ -79,6 +79,10 @@ renv::activate()
 
 6) Restore Dependencies
      - install project dependencies as specified in the `renv.lock` file and installs the exact versions of the packages that the project depends on
+```
+# Run in R console
+renv::restore()
+```
 7) Work with project
      - after these steps, your copy of the analysis R environment should be sest up with all the necessary packages and you can start working on the project.
      - The initial activation and restoration manual steps taken above will only be needed to set up the project for the first time
