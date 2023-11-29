@@ -43,27 +43,40 @@ Provide an overview of the directory structure and files, for example:
 ## Installation
 
 What are the steps required to install your project? Provide a step-by-step description of how to get the development environment running.
-
-1) Clone this repository to your local machine
-- In the command line:
-
+1) Clone this repository to your local machine (choose one method)
+  - In the command line:
 ```bash
+# run in command line shell
 git clone https://github.com/closek/Nov2021.git
 cd yourprojectname
 ```
-
   OR
-  - Github webpage `Repo URL`
-    - green `<> Code` tab with drop down menu, `Local` tab, click `Download ZIP`
-    - open `.zip` file on local computer
+  -  Github webpage `Repo URL`:
+      - click green `<> Code` tab with drop down menu, select `Local` tab, click `Download ZIP`
+      - open `.zip` file on local computer
 
-3) Open `.Rproj` to active project and environment
+3) Open `.Rproj` in Rstudio or your R environment of choice
+4) Install `renv` if not already installed (usually a one-time setup on a new system:
+```
+# Run in R console
+install.packages("renv")
+```
+5) Activate `renv` project environment
+     - ensures that `renv` is actively managing the library paths for your project.
+```
+# Run in R console
+renv::activate()
+```
+
+6) Restore Dependencies
+     - install project dependencies as specified in the `renv.lock` file and installs the exact versions of the packages that the project depends on
+
 
 We used the `renv` package to manage & record package versions. This records the version of R, package versions, and their dependencies into a file `renv.lock` at the root of this `.Rproj`. The purpose of this is to allow users on different computer setups and in the future to reproduce the results of this project in the same way. This is because different package versions can behave differently version to version, and even introduce errors or produced different results. By using the same exact set of package versions that the authors used to write the code, the same results can be reproduced and prevent unintended errors.
 
 `Renv` creates a separate custom project library that is separate from the system library typically used when the `library()` function is called. This means that when you recreate the `renv` project library by calling `renv::restore()` you will likely need to install many packages. Many may be already installed in your system library, but they will need to be installed again into this custom `renv` project library with the exact version recorded in the `renv.lock` file. All files, folders, and scripts within the `.Rproj` will share the `renv` project library.
 
-For more information about `renv` and how to add/update the `renv` project library -> [ ](https://rstudio.github.io/renv/articles/renv.html).
+For more information about `renv` and how to add/update the `renv` project library -> [https://rstudio.github.io/renv/articles/renv.html ](https://rstudio.github.io/renv/articles/renv.html).
 
 
 ## Usage
