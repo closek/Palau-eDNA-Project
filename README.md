@@ -13,8 +13,8 @@ Provide a short description explaining the what, why, and how of your project. U
 
 If your README is long, add a table of contents to make it easy for users to find what they need.
 
-- [Repository overview](##Repository overview)
-- [Installation](##installation)
+- [Repository overview](#repository-overview)
+- [Installation](#installation)
 - [Usage](#usage)
 - [Credits](#credits)
 - [License](#license)
@@ -71,7 +71,9 @@ renv::activate()
 
 6) Restore Dependencies
      - install project dependencies as specified in the `renv.lock` file and installs the exact versions of the packages that the project depends on
-
+7) Work with project
+     - after these steps, your copy of the analysis R environment should be sest up with all the necessary packages and you can start working on the project.
+     - The initial activation and restoration manual steps taken above will only be needed to set up the project for the first time
 
 We used the `renv` package to manage & record package versions. This records the version of R, package versions, and their dependencies into a file `renv.lock` at the root of this `.Rproj`. The purpose of this is to allow users on different computer setups and in the future to reproduce the results of this project in the same way. This is because different package versions can behave differently version to version, and even introduce errors or produced different results. By using the same exact set of package versions that the authors used to write the code, the same results can be reproduced and prevent unintended errors.
 
