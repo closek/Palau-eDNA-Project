@@ -37,8 +37,19 @@ The directory structure and files:
 ├── Quarto_trial.qmd
 ├── README.md
 └── renv.lock
-
 ```
+
+Folder and file descriptions:
+
+- `data/` contains 2 subfolders:  `raw/` and `processed/`.
+  - put your data in the `raw/` folder
+  - the analysis code will produce data products that are saved into the `processed/` folder
+- `products/` folder contains figures and maps created and saved by the analysis
+- `renv/` stores the project package version control
+  - do not need to directly interact with these files - they are used in several `renv::` package commands
+- `scripts/` folder contains short pieces of R code that do specific things (i.e. scripts)
+  - can be run within the analysis 
+
 ## Installation
 
 1) Clone this repository to your local machine (choose one method)
