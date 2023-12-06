@@ -84,7 +84,6 @@ library(data.table)
 library(superheat)
 library(calecopal) # color palette
 library(viridisLite) # color blind & gray scale friendly color palette
-install.packages("cowplot")
 library(cowplot) # create graphs with multiple components in a grid
 library(fantaxtic)
 library(magrittr) # contains pipe function
@@ -96,7 +95,8 @@ library(devtools)
 #BiocManager::install("MicrobiotaProcess")
 library(MicrobiotaProcess)
 library(patchwork)
-devtools::install_github("r-lib/conflicted")
+#devtools::install_github("r-lib/conflicted")
+library(conflicted)
 
 ```
 
@@ -283,11 +283,11 @@ if (!dir.exists(file.path(dir_data_proc, file_nearshore_esv))) {
   write_csv(nearshore_esv, 
             file = file.path(dir_data_proc, file_nearshore_esv))
   # if file exists - read it in
-} else (nearshore_esv <- read_csv(file.path) )
+} else (nearshore_esv <- read_csv(file.path(dir_data_proc, file_nearshore_esv)) )
 
 ```
 
-3)  Create Nearshore & Offshore species lists (or load if they already exist)
+3)  Create Nearshore & Offshore species dataframes (or load if they already exist)
 
 ```{r create-near-offshore-species-list}
 # store file names for reuse
@@ -315,7 +315,7 @@ if (!dir.exists(file.path(dir_data_proc, file_nearshore_esv_sp))) {
   write_csv(nearshore_esv_sp, 
             file = file.path(dir_data_proc, file_nearshore_esv_sp))
   # if file exists - read it in
-} else (nearshore_esv_sp <- read_csv(file.path(dir_data_proc, nearshore_esv_sp)))
+} else (nearshore_esv_sp <- read_csv(file.path(dir_data_proc, file_nearshore_esv_sp)))
 ```
 
 ## Data Analysis
@@ -323,15 +323,9 @@ if (!dir.exists(file.path(dir_data_proc, file_nearshore_esv_sp))) {
 1)  Unique Species
 
 ```{r unique-species}
-#esv_list <- read.csv(here("data/JVB1710-MiFishU-esv-data.csv"),header = TRUE)
-#glimpse(esv_list)
-#str(esv_list)
 
-#n_distinct(esv_list$Species)
-#unique(esv_list$Species)
-
-n_distinct(esv_clean_data$Species)
-unique(esv_clean_data$Species)
+n_distinct(esv_clean_data_df$Species)
+unique(esv_clean_data_df$Species)
 ```
 
 2)  Unique Species - nearshore
@@ -364,8 +358,8 @@ unique(offshore_esv$Species)
 #n_distinct(esv_list$Genus)
 #unique(esv_list$Genus)
 
-n_distinct(esv_clean_data$Genus)
-unique(esv_clean_data$Genus)
+n_distinct(esv_clean_data_df$Genus)
+unique(esv_clean_data_df$Genus)
 ```
 
 5)  Unique Families
@@ -375,8 +369,8 @@ unique(esv_clean_data$Genus)
 #unique(esv_list$Family)
 #unique
 
-n_distinct(esv_clean_data$Family)
-unique(esv_clean_data$Family)
+n_distinct(esv_clean_data_df$Family)
+unique(esv_clean_data_df$Family)
 
 ```
 
