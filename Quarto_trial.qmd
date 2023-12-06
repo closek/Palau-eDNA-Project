@@ -19,6 +19,7 @@ editor: visual
 editor_options: 
   chunk_output_type: inline
 execute: 
+  eval: true
   echo: false
   warning: false
 ---
@@ -37,22 +38,20 @@ There are three components to this document:
 
 ## Code Chunk Example
 
-Below is an example of a code chunk that can run R code. You can set execution options in the YAML (`execute:`)that will be the default options for every code chunk, or you can set them in individual code chunks. More details here --\> <https://quarto.org/docs/computations/execution-options.html>
+Below is an example of a code chunk that can run R code. You can set execution options in the YAML (`execute:`) that will be the default options for every code chunk, or you can set them in individual code chunks. More details here --\> <https://quarto.org/docs/computations/execution-options.html>
 
 ```{r example-code-chunk}
 #| echo: true
-#| warning: false
-
-# here is example R code. To write comments within a code chunk, use a # at the beginning of the line, lines with # will not be run within a code chunk.
-test <- 1 + 1
-test_2 <- test * 6
-test_2
 
 # The coding language is indicated in the very first line, within the curly brackets {}. 
 # Use `#| ` to set options for the individual code chunk below the first line of the code chunk.
 
 # A code chunk execute option example is `echo: false` this disables the printing of code (only output is displayed in rendered html).
 
+# here is example R code. To write comments within a code chunk, use a # at the beginning of the line, lines with # will not be run within a code chunk.
+test <- 1 + 1
+test_2 <- test * 6
+test_2
 ```
 
 # Analysis Template
@@ -74,6 +73,8 @@ Although this package management strategy is meant to reduce errors among future
 :::
 
 ```{r load-packages}
+#| output: false
+
 # load renv packages from project renv.lock file
 #renv::restore()
 
@@ -85,7 +86,7 @@ library(superheat)
 library(calecopal) # color palette
 library(viridisLite) # color blind & gray scale friendly color palette
 library(cowplot) # create graphs with multiple components in a grid
-library(fantaxtic)
+#library(fantaxtic)
 library(magrittr) # contains pipe function "%>%"
 #devtools::install_github("joey711/phyloseq")
 library(phyloseq)
@@ -177,7 +178,7 @@ The code chunk below "clean-data" be separated into its own `./scripts/clean_dat
 # }
 ```
 
-```{r clean-data}
+```{r clean-data, eval = F}
 #Remove preliminary run (i.e., remove duplicated samples "S046...1" that have newer ".2" version) & cleanup columns
 
 data <- esv_data_all %>% 
@@ -323,7 +324,7 @@ if (!dir.exists(file.path(dir_data_proc, file_nearshore_esv_sp))) {
 1)  Unique Species
 
 ```{r unique-species}
-
+#| eval: false
 n_distinct(esv_clean_data_df$Species)
 unique(esv_clean_data_df$Species)
 ```
@@ -331,6 +332,8 @@ unique(esv_clean_data_df$Species)
 2)  Unique Species - nearshore
 
 ```{r unique-nearshore-species}
+#| eval: false
+
 # filters out (removes) all rows from the dataframe nearshore_esv that contain only zeros, keeping only the rows that have at least one non-zero element
 ns_esv <- nearshore_esv[rowSums(nearshore_esv==0, na.rm=TRUE)<ncol(nearshore_esv), ]
 
@@ -344,6 +347,8 @@ unique(nearshore_esv$Species)
 3)  Unique Species - offshore
 
 ```{r unique-offshore-species}
+#| eval: false
+
 n_distinct(offshore_esv$Species)
 unique(offshore_esv$Species)
 ```
@@ -351,6 +356,8 @@ unique(offshore_esv$Species)
 4)  Unique Genera
 
 ```{r unique-genera}
+#| eval: false
+
 n_distinct(esv_clean_data_df$Genus)
 unique(esv_clean_data_df$Genus)
 ```
@@ -358,6 +365,8 @@ unique(esv_clean_data_df$Genus)
 5)  Unique Families
 
 ```{r unique-families}
+#| eval: false
+
 n_distinct(esv_clean_data_df$Family)
 unique(esv_clean_data_df$Family)
 ```
@@ -485,18 +494,20 @@ physeq1_mar_lt10k <- prune_samples(sample_sums(physeq1_mar)<10000, physeq1_mar)
 physeq1_mar_pruned <- prune_samples(sample_sums(physeq1_mar)>=10000, physeq1_mar)
 ```
 
-### Standardize number of reads to the median sequencing depth
+12) Standardize number of reads to the median sequencing depth
 
-```{r}
-total = median(sample_sums(physeq1_mar_pruned))
-#total == 74889
-standf = function(x, t=total) round(t *(x / sum(x)))
-physeq2 = transform_sample_counts(physeq1_mar_pruned, standf)
-physeq2
+```{r std-reads-meadian-seq-depth}
+# AM - what is this doing?
+total <- median(sample_sums(physeq1_mar_pruned))
+standf <- function(x, t=total) round(t *(x / sum(x)))
+physeq2 <- transform_sample_counts(physeq = physeq1_mar_pruned, 
+                                   fun = standf)
 
 ```
 
 ```{r}
+# AM - can we remove?
+
 #rcurve(physeq2, add_sample_data = TRUE)
 #p <- ggrare(physeq2, step = 500, color = "Zone", label = "Sample", se = FALSE)
 
@@ -506,23 +517,23 @@ sample_data(physeq2)
 #print(physeq2_30)
 ```
 
-### Barplots of normalized environmental samples and marine ESVs
+13) Barplots of normalized environmental samples and marine ESVs
 
-```{r}
+```{r figure-barplot-normal-env-marine-family}
 plot_bar(physeq2, fill = "Family")
 ```
 
-```{r}
+```{r figure-barplot-normal-env-marine-order}
 plot_bar(physeq2, fill = "Order")
 ```
 
-### Heatmaps of normalized environmental samples and marine ESVs
+14) Heatmaps of normalized environmental samples and marine ESVs
 
-```{r}
+```{r figure-heatmap-normal-env-marine-phylum}
 plot_heatmap(physeq2, taxa.label="Phylum")
 ```
 
-### Alternative barplot formats
+15) Alternative barplot formats
 
 ```{r}
 plot_bar(physeq2, x= "Zone", fill = "Family")
@@ -536,7 +547,7 @@ plot_bar(physeq2, x= "Zone", fill = "Family") + facet_wrap(~Cardinal_direction)
 #plot_net(physeq2, maxdist=0.4, color="Cardinal_direction", shape="Near_or_Offshore")
 ```
 
-### Richness plots
+16) Richness plots
 
 ```{r}
 # plot_richness() function produces a ggplot object and can be ammended just like ggplot
@@ -857,7 +868,7 @@ get_taxa_unique(sfOffshore, "Species")
 ###Top
 
 ```{r}
-top5sf_species <- sort(tapply(taxa_sums(sf), tax_table(sf) [, "Family"], sum), decreasing = TRUE)[1:5]
+top5sf_species <- sort(tapply(taxa_sums(sf), phyloseq::tax_table(sf) [, "Family"], sum), decreasing = TRUE)[1:5]
 
 names(sort(taxa_sums(sf), decreasing = TRUE)[1:10])
 
