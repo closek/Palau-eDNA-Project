@@ -86,7 +86,7 @@ library(calecopal) # color palette
 library(viridisLite) # color blind & gray scale friendly color palette
 library(cowplot) # create graphs with multiple components in a grid
 library(fantaxtic)
-library(magrittr) # contains pipe function
+library(magrittr) # contains pipe function "%>%"
 #devtools::install_github("joey711/phyloseq")
 library(phyloseq)
 packageVersion("phyloseq")
@@ -362,57 +362,70 @@ n_distinct(esv_clean_data_df$Family)
 unique(esv_clean_data_df$Family)
 ```
 
-#### Thea stopped here
+6)  Transform data to Phyloseq Object 
 
-### Transform esv_clean_data into Phyloseq Object
+```{r create-phyloseq-object}
 
-```{r}
-names(esv_clean_data)
+# AM - did not delete original code - review with Collin to get OK to replace with this method. Can we find a more reproducible way of selecting columns? 
+
+names(esv_clean_data_df)
 
 #create an OTU/ESV count table
-esv_read_count <- select(esv_clean_data, -c(1))
-esv_read_count <- select(esv_read_count, -c(2:19))
-esv_read_count <- data.frame(esv_read_count, row.names = 1)
-#names(esv_read_count)
-#remove_prefix(esv_read_count, c("X")) %>% names()
-class(esv_read_count)
-esv_read_count_m <- as.matrix(esv_read_count)
-esv_read_count_m
-class(esv_read_count_m)
 
-rowSums(esv_read_count)
-colSums(esv_read_count)
+# AM - converted this to a single piped operation for clarity
+# esv_read_count <- select(esv_clean_data_df, -c(1))
+# esv_read_count <- select(esv_read_count, -c(2:19))
+# esv_read_count <- data.frame(esv_read_count, row.names = 1)
+
+#create an OTU/ESV count table
+esv_read_count_m <- esv_clean_data_df %>%
+  select(-c(1)) %>% # remove first column
+  select(-c(2:19)) %>% # remove columns 2-19
+  data.frame(row.names = 1) %>% # convert result to data.frame object with row names
+  #remove_prefix(c("X")) %>% # remove prefix from column names if needed - remove first # in this line
+  # names() %>% # if prefix removed above - remove first # in this line (could make this into a conditional statement)
+  as.matrix() # convert data.frame to matrix object class
+
+# AM - what is the point of printing out sums of columns & rows?
+# rowSums(esv_read_count)
+# colSums(esv_read_count)
 
 ESV <- phyloseq::otu_table(esv_read_count_m, taxa_are_rows = TRUE)
 
+# AM - do we need to write/save phyloseq object? Can generate with this code. 
 #write_csv(ESV, file = file.path("products/ESV.csv"))
 #write.csv(ESV, file = "/Users/closek/Documents/Nov2021_PalaueDNA/R/products/ESV.csv")
 
 #create a taxonomy table
-esv_read_tax <- select(esv_clean_data, -c(1,3))
-esv_read_tax <- select(esv_read_tax, -c(9:195))
-esv_read_tax <- data.frame(esv_read_tax, row.names = 1)
-class(esv_read_tax)
-esv_read_tax_m <- as.matrix(esv_read_tax)
-class(esv_read_tax_m)
-names(esv_read_tax_m)
-TAX <- phyloseq::tax_table(esv_read_tax_m)
+# esv_read_tax <- select(esv_clean_data_df, -c(1,3))
+# esv_read_tax <- select(esv_read_tax, -c(9:195))
+# esv_read_tax <- data.frame(esv_read_tax, row.names = 1)
+# class(esv_read_tax)
+# esv_read_tax_m <- as.matrix(esv_read_tax)
+# class(esv_read_tax_m)
+# names(esv_read_tax_m)
+# TAX <- phyloseq::tax_table(esv_read_tax_m)
 
-
+#create a taxonomy table
+esv_read_tax_m <- esv_clean_data_df %>%
+  select(-c(1,3)) %>% # remove columns 1 and 3 - AM will this be standard across datasets? can we make this into positive selection to make more concise?
+  select(-c(9:195)) %>% # remove columns 9 through 195
+  data.frame(row.names = 1) %>% # convert to data.frame class with row names
+  as.matrix() # convert to matrix object
+ 
+TAX <- phyloseq::tax_table(esv_read_tax_m) 
 
 #create a sample metadata 
-samp_meta <- read.csv(here("data/SampleMetaData.csv"),header = TRUE)
-samp_meta_df <- data.frame(samp_meta, row.names = 1)
-samp_metadata <- phyloseq::sample_data(samp_meta_df)
-class(samp_metadata)
+#samp_meta <- read.csv(here("data/SampleMetaData.csv"),header = TRUE)
+samp_meta <- read_csv(file.path(dir_data_raw, "SampleMetaData.csv")) # Need to move this file into raw folder
+samp_meta_df <- data.frame(samp_meta, row.names = 1) # use 1st column as row names
+samp_metadata <- phyloseq::sample_data(samp_meta_df) # create phyloseq metadata
+#class(samp_metadata)
 
 #create phyloseq object
 physeq <- phyloseq(ESV, TAX)
-physeq
-
+# merge phyloseq metadata with phyloseq object
 physeq1 <- merge_phyloseq(physeq, samp_metadata)
-
-physeq1
 ```
 
 ### Components of phyloseq object
