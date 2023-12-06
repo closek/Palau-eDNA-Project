@@ -428,20 +428,19 @@ physeq <- phyloseq(ESV, TAX)
 physeq1 <- merge_phyloseq(physeq, samp_metadata)
 ```
 
-### Components of phyloseq object
+7) Explore Components of Phyloseq Object (if needed)
 
-```{r}
-sample_names(physeq1)
-rank_names(physeq1)
-sample_variables(physeq1)
+```{r explore_phyloseq}
+#sample_names(physeq1)
+#rank_names(physeq1)
+#sample_variables(physeq1)
 ```
 
-### Subset samples to keep only Environmental samples
+8) Subset Phyloseq Samples - Keep Environmental Samples Only
 
-```{r}
-physeq1 <- subset_samples(physeq1, Control_or_Envtl =="Envtl")
-physeq1
-
+```{r phyloseq_env_samples_only}
+physeq_env <- subset_samples(physeq1, Control_or_Envtl =="Envtl")
+# should not replace object with same name - harder to troubleshoot - new versions need new names
 ```
 
 ### Families Barplot with only Environmental samples (excluding Controls)
@@ -456,7 +455,7 @@ physeq1
 #| fig-format: "png"
 
 
-plot_bar(physeq1, fill = "Family")
+plot_bar(physeq_env, fill = "Family")
 ```
 
 ### Subset to keep only ESVs with marine fish and mammal annotations
@@ -464,12 +463,12 @@ plot_bar(physeq1, fill = "Family")
 ```{r}
 #Select for only Classes: Actinopteri and Mammalia, which will remove Classes: Aves and Amphibia, as well as the unannotated ESVs 
 #Within Mammalia remove non-marine mammals in  Family: Bovidae, Suidae, Canidae, Felindae, Hominidae and Order: Primates
-physeq1
-physeq1_mar <- subset_taxa(physeq1, Class %in% c("Actinopteri", "Mammalia"))
+physeq_env
+physeq1_mar <- subset_taxa(physeq_env, Class %in% c("Actinopteri", "Mammalia"))
 physeq1_mar
-physeq1_mar <- subset_taxa(physeq1, !(Order %in% c("Primates")))
+physeq1_mar <- subset_taxa(physeq_env, !(Order %in% c("Primates")))
 physeq1_mar
-physeq1_mar <- subset_taxa(physeq1, !(Family %in% c("Bovidae", "Canidae", "Felindae", "Hominidae", "Suidae")))
+physeq1_mar <- subset_taxa(physeq_env, !(Family %in% c("Bovidae", "Canidae", "Felindae", "Hominidae", "Suidae")))
 physeq1_mar
 ```
 
