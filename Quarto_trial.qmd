@@ -473,23 +473,25 @@ physeq1_mar
 physeq1_mar <- subset_taxa(physeq_env, !(Family %in% c("Bovidae", "Canidae", "Felindae", "Hominidae", "Suidae")))
 physeq1_mar
 
-# Sequence sum per Environmental sample
-# sample_sums(physeq1_mar)
-
 ```
 
-### Prune Environmental samples with less than 10K sequences
+11) Environmental Marine Samples With More Than 10,000 Sequences
 
-```{r}
-sample_sums(physeq1_mar)<10000
+```{r env-marine-more-than-10k}
+# AM - can we remove these commented out lines of code? 
+#sample_sums(physeq1_mar)<10000
+
+# create new phyloseq object - Environmental Marine fish and mammal samples with less than 10,000 sequences
 physeq1_mar_lt10k <- prune_samples(sample_sums(physeq1_mar)<10000, physeq1_mar)
-physeq1_mar_lt10k
-sample_sums(physeq1_mar_lt10k)
-sample_names(physeq1_mar_lt10k)
+#physeq1_mar_lt10k
+#sample_sums(physeq1_mar_lt10k) # do we need this? 
+#sample_names(physeq1_mar_lt10k) # need this? 
+
+# create new phyloseq object - Environmental Marine fish and mammal samples with greater than 10,000 sequences
 physeq1_mar_pruned <- prune_samples(sample_sums(physeq1_mar)>=10000, physeq1_mar)
-sample_sums(physeq1_mar_pruned)
-sample_names(physeq1_mar_pruned)
-physeq1_mar_pruned
+# sample_sums(physeq1_mar_pruned)
+# sample_names(physeq1_mar_pruned)
+# physeq1_mar_pruned
 #removed 14 samples (previously 160 samples, now 146)
 ```
 
