@@ -331,14 +331,14 @@ unique(esv_clean_data_df$Species)
 2)  Unique Species - nearshore
 
 ```{r unique-nearshore-species}
+# filters out (removes) all rows from the dataframe nearshore_esv that contain only zeros, keeping only the rows that have at least one non-zero element
 ns_esv <- nearshore_esv[rowSums(nearshore_esv==0, na.rm=TRUE)<ncol(nearshore_esv), ]
+
+#filters out all rows from nearshore_esv whose sum across all columns is 0 or negative, keeping only rows where this sum is positive
 #nearshore_esv[rowSums(nearshore_esv[])>0,]
+
 n_distinct(nearshore_esv$Species)
 unique(nearshore_esv$Species)
-
-#nearshore_esv_sp_wo0 <- read.csv(here("products/nearshore_esv_sp_wo0.csv"),header = TRUE)
-#unique(nearshore_esv_sp_wo0$Species)
-#n_distinct(nearshore_esv_sp_wo0$Species)
 ```
 
 3)  Unique Species - offshore
@@ -346,18 +346,11 @@ unique(nearshore_esv$Species)
 ```{r unique-offshore-species}
 n_distinct(offshore_esv$Species)
 unique(offshore_esv$Species)
-
-#offshore_esv_sp_wo0 <- read.csv(here("products/offshore_esv_sp_wo0.csv"),header = TRUE)
-#unique(offshore_esv_sp_wo0$Species)
-#n_distinct(offshore_esv_sp_wo0$Species)
 ```
 
 4)  Unique Genera
 
 ```{r unique-genera}
-#n_distinct(esv_list$Genus)
-#unique(esv_list$Genus)
-
 n_distinct(esv_clean_data_df$Genus)
 unique(esv_clean_data_df$Genus)
 ```
@@ -365,13 +358,8 @@ unique(esv_clean_data_df$Genus)
 5)  Unique Families
 
 ```{r unique-families}
-#n_distinct(esv_list$Family)
-#unique(esv_list$Family)
-#unique
-
 n_distinct(esv_clean_data_df$Family)
 unique(esv_clean_data_df$Family)
-
 ```
 
 #### Thea stopped here
