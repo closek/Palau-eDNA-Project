@@ -1,7 +1,8 @@
-## Thid documents tells git what files & folders to ignore
+## This documents tells git what files & folders to ignore
 
 # User - specific files 
-.Rproj.user
+.Rprofile
+.Rproj.user/
 .Rhistory
 .RData
 .Ruserdata
