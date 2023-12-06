@@ -430,7 +430,7 @@ physeq1 <- merge_phyloseq(physeq, samp_metadata)
 
 7) Explore Components of Phyloseq Object (if needed)
 
-```{r explore_phyloseq}
+```{r explore-phyloseq}
 #sample_names(physeq1)
 #rank_names(physeq1)
 #sample_variables(physeq1)
@@ -438,14 +438,14 @@ physeq1 <- merge_phyloseq(physeq, samp_metadata)
 
 8) Subset Phyloseq Samples - Keep Environmental Samples Only
 
-```{r phyloseq_env_samples_only}
+```{r phyloseq-env-samples_only}
 physeq_env <- subset_samples(physeq1, Control_or_Envtl =="Envtl")
 # should not replace object with same name - harder to troubleshoot - new versions need new names
 ```
 
-### Families Barplot with only Environmental samples (excluding Controls)
+9) Barplot - Families - Environmental Samples (excluding Controls)
 
-```{r}
+```{r figure-barplot-families_enviro}
 #| label: Fam-Env-samples
 #| title: Families from Environmental samples
 #| fig-width: 6
@@ -458,11 +458,13 @@ physeq_env <- subset_samples(physeq1, Control_or_Envtl =="Envtl")
 plot_bar(physeq_env, fill = "Family")
 ```
 
-### Subset to keep only ESVs with marine fish and mammal annotations
+10) Subset Phyloseq Environmental Samples - ESVs with marine fish and mammal annotations
 
-```{r}
+```{r create-env-marine-fish-mammal}
 #Select for only Classes: Actinopteri and Mammalia, which will remove Classes: Aves and Amphibia, as well as the unannotated ESVs 
 #Within Mammalia remove non-marine mammals in  Family: Bovidae, Suidae, Canidae, Felindae, Hominidae and Order: Primates
+
+# AM - These subsequent lines of code keep replacing the same data object, they do not layer ontop of previous results. Is this the intention? Or was this a discovery of what is in the data and then builds new subset based on the results (which is not useful for a new dataset) We can encode the final subset to be based on flexible results
 physeq_env
 physeq1_mar <- subset_taxa(physeq_env, Class %in% c("Actinopteri", "Mammalia"))
 physeq1_mar
@@ -470,12 +472,10 @@ physeq1_mar <- subset_taxa(physeq_env, !(Order %in% c("Primates")))
 physeq1_mar
 physeq1_mar <- subset_taxa(physeq_env, !(Family %in% c("Bovidae", "Canidae", "Felindae", "Hominidae", "Suidae")))
 physeq1_mar
-```
 
-### Sequence sum per Environmental sample
+# Sequence sum per Environmental sample
+# sample_sums(physeq1_mar)
 
-```{r}
-sample_sums(physeq1_mar)
 ```
 
 ### Prune Environmental samples with less than 10K sequences
