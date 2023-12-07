@@ -1,8 +1,13 @@
 ---
 title: "Palau eDNA Report Template"
+subtitle: "Subtitle Here"
 author: 
-  - name: "Insert your name here"
-  - name: "additional author name here"
+  - name: "Author name 1"
+    affiliation: "Organization 1"
+    email: "author1@email.com"
+  - name: "Author name 2"
+    afflication: "Organizaton 2"
+    email: "author2@email.com"
 date: "`r Sys.Date()`"
 format: 
   html:
@@ -24,13 +29,13 @@ execute:
   warning: false
 ---
 
-# Document Purpose & Description
+# Document Purpose
 
 This document is a template for analysis and reporting eDNA results. This file is a Quarto document (a newer version of a Rmarkdown file [Intro to a Quarto doc](https://quarto.org/docs/faq/rmarkdown.html){.uri}) that can be opened in Rstudio and serve two purposes: 1) run code and 2) build a html (or pdf) report document.
 
 The authors intended this file along with the other folders & files within this project to document analysis steps, make analyses reproducible, and make future analyses smoother and quicker to run. See the [Quarto Website](https://quarto.org/) for a more in depth introduction to Quarto docs. The "Document Purpose & Description" section can be deleted when creating a new analysis. 
 
-## There are three components to this document (when viewing the code)
+## Document Components
 
 1.  **YAML (yet another markdown language) header** - the code contained at the top of this document bounded by a set of `---` marks. This is a place to store document metadata and instructions for how the rest of the quarto doc should run code chunks and format rendered documents. See here for more information --\> [Authoring Docs](https://quarto.org/docs/authoring/front-matter.html){.uri} and [YAML HTML Options](https://quarto.org/docs/reference/formats/html.html#citation). We currently have the YAML set so when you Render this document a self-contained .html document will be created, this file format and formatting options can be further customized.
 
@@ -41,6 +46,22 @@ The authors intended this file along with the other folders & files within this 
 ## Code Chunk Example - Run Code
 
 The primary function of this document is to run code. Below is an example of a code chunk that runs R code. These are where data cleaning and analysis steps are contained. In Rstudio you can run code several ways:
+
+```{r example-code-chunk}
+#| echo: true
+
+# Code chunk example
+
+# The coding language is indicated in the very first line, within the curly brackets {}. 
+# Use `#| ` to set options for the individual code chunk below the first line of the code chunk.
+
+# A code chunk execute option `echo: true` enables the printing of code output in rendered report 
+
+# here is example R code. To write comments within a code chunk, use a # at the beginning of the line, lines with # will not be run within a code chunk.
+test <- 1 + 1
+test_2 <- test * 6
+test_2
+```
 
 1.  line-by-line (just like a normal .R file)
 
@@ -69,20 +90,6 @@ The secondary function of this document is to build a report document. This requ
 The final template .html product will look something like this:
 
 ![](images/rendered_html_report.png)
-
-```{r example-code-chunk}
-#| echo: true
-
-# The coding language is indicated in the very first line, within the curly brackets {}. 
-# Use `#| ` to set options for the individual code chunk below the first line of the code chunk.
-
-# A code chunk execute option example is `echo: false` this disables the printing of code (only output is displayed in rendered html).
-
-# here is example R code. To write comments within a code chunk, use a # at the beginning of the line, lines with # will not be run within a code chunk.
-test <- 1 + 1
-test_2 <- test * 6
-test_2
-```
 
 # Analysis Template
 
@@ -404,6 +411,7 @@ unique(esv_clean_data_df$Family)
 6)  Transform data to Phyloseq Object
 
 ```{r create-phyloseq-object}
+#| output: false
 
 # AM - did not delete original code - review with Collin to get OK to replace with this method. Can we find a more reproducible way of selecting columns? 
 
@@ -482,24 +490,9 @@ physeq_env <- subset_samples(physeq1, Control_or_Envtl =="Envtl")
 # should not replace object with same name - harder to troubleshoot - new versions need new names
 ```
 
-9)  Barplot - Families - Environmental Samples (excluding Controls)
+9) Subset Phyloseq Environmental Samples - ESVs with marine fish and mammal annotations
 
-```{r figure-barplot-families_enviro}
-#| label: Fam-Env-samples
-#| title: Families from Environmental samples
-#| fig-width: 6
-#| fig-asp: 0.618
-#| out-width: "40%"
-#| fig-align: center
-#| fig-format: "png"
-
-
-plot_bar(physeq_env, fill = "Family")
-```
-
-10) Subset Phyloseq Environmental Samples - ESVs with marine fish and mammal annotations
-
-```{r create-env-marine-fish-mammal}
+```{r create-env-marine-fish-mammal, echo=FALSE}
 #Select for only Classes: Actinopteri and Mammalia, which will remove Classes: Aves and Amphibia, as well as the unannotated ESVs 
 #Within Mammalia remove non-marine mammals in  Family: Bovidae, Suidae, Canidae, Felindae, Hominidae and Order: Primates
 
@@ -514,7 +507,7 @@ physeq1_mar
 
 ```
 
-11) Environmental Marine Samples With More Than 10,000 Sequences
+10) Environmental Marine Samples With More Than 10,000 Sequences
 
 ```{r env-marine-more-than-10k}
 # create new phyloseq object - Environmental Marine fish and mammal samples with less than 10,000 sequences
@@ -524,7 +517,7 @@ physeq1_mar_lt10k <- prune_samples(sample_sums(physeq1_mar)<10000, physeq1_mar)
 physeq1_mar_pruned <- prune_samples(sample_sums(physeq1_mar)>=10000, physeq1_mar)
 ```
 
-12) Standardize number of reads to the median sequencing depth
+11) Standardize number of reads to the median sequencing depth
 
 ```{r std-reads-meadian-seq-depth}
 # AM - what is this doing?
@@ -541,10 +534,27 @@ physeq2 <- transform_sample_counts(physeq = physeq1_mar_pruned,
 #rcurve(physeq2, add_sample_data = TRUE)
 #p <- ggrare(physeq2, step = 500, color = "Zone", label = "Sample", se = FALSE)
 
-sample_data(physeq2)
+#sample_data(physeq2)
 #TopNESVs <- names(sort(taxa_sums(physeq2), TRUE)[1:30])
 #physeq2_30 <- prune_taxa(TopNESVs, physeq2$Species)
 #print(physeq2_30)
+```
+
+# Visualizing
+
+9)  Barplot - Families - Environmental Samples (excluding Controls)
+
+```{r figure-barplot-families_enviro}
+#| label: Fam-Env-samples
+#| title: Families from Environmental samples
+#| fig-width: 6
+#| fig-asp: 0.618
+#| out-width: "40%"
+#| fig-align: center
+#| fig-format: "png"
+
+
+plot_bar(physeq_env, fill = "Family")
 ```
 
 13) Barplots of normalized environmental samples and marine ESVs
@@ -753,6 +763,8 @@ ggsave(plot = Fig_bony_fish_leg2,
        height = 5,
        scale = 2,
        units = "in")
+
+Fig_bony_fish_leg2
 ```
 
 ### Marine Mammals
