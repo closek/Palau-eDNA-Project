@@ -554,7 +554,7 @@ Fig_richness
 
 ggsave(plot = Fig_richness, 
        device = "png", 
-       filename = file.path("products/figures/Fig_richness_near_offshore.png"),
+       filename = file.path("products/figures/Fig_richness_near_offshore_rv.png"),
        dpi = 600,
        width = 6,
        height = 4,
@@ -582,7 +582,7 @@ po <- plot_ordination(physeq2,
                       title = "Nearshore & Offshore Samples")
 po
 
-jpeg(file="saving_plot1.jpeg")
+jpeg(file="saving_plot1_rv.jpeg")
 ```
 
 ```{r, echo=TRUE}
@@ -597,9 +597,10 @@ Fig_ord_near_off <- po +
   coord_fixed()
 
 Fig_ord_near_off
+
 ggsave(plot = Fig_ord_near_off, 
        device = "png", 
-       filename = file.path("products/figures/Fig_ord_near_offshore.png"),
+       filename = file.path("products/figures/Fig_ord_near_offshore_rv.png"),
        dpi = 600,
        width = 7,
        height = 3.5,
@@ -627,7 +628,7 @@ Fig_ord_near_off_grid
 
 ggsave(plot = Fig_ord_near_off_grid, 
        device = "png", 
-       filename = file.path("products/figures/Fig_ord_near_offshore_grid.png"),
+       filename = file.path("products/figures/Fig_ord_near_offshore_grid_rv.png"),
        dpi = 600,
        width = 7,
        height = 5,
@@ -774,6 +775,48 @@ sfNearshore
 sfOffshore
 ```
 
+###Subset by Zones
+```{r}
+sfSHR <- subset_samples(sf, Zone == "SHR")
+sfSHR
+
+sfLGN <- subset_samples(sf, Zone == "LGN")
+sfLGN
+
+sfFRR <- subset_samples(sf, Zone == "FRR")
+sfFRR
+
+sfAFZ <- subset_samples(sf, Zone == "AFZ")
+sfAFZ
+
+sfDFZ <- subset_samples(sf, Zone == "DFZ")
+sfDFZ
+
+sfNMS <- subset_samples(sf, Zone == "NMS")
+sfNMS
+
+
+sfSHR <- phyloseq::prune_taxa(taxa_sums(sfSHR)>=1, sfSHR)
+sfSHR
+
+sfLGN <- phyloseq::prune_taxa(taxa_sums(sfLGN)>=1, sfLGN)
+sfLGN
+
+sfFRR <- phyloseq::prune_taxa(taxa_sums(sfFRR)>=1, sfFRR)
+sfFRR
+
+sfAFZ <- phyloseq::prune_taxa(taxa_sums(sfAFZ)>=1, sfAFZ)
+sfAFZ
+
+sfDFZ <- phyloseq::prune_taxa(taxa_sums(sfDFZ)>=1, sfDFZ)
+sfDFZ
+
+sfNMS <- phyloseq::prune_taxa(taxa_sums(sfNMS)>=1, sfNMS)
+sfNMS
+
+```
+
+
 ###Family counts of physeq2 object (sf)
 
 ```{r}
@@ -846,3 +889,61 @@ top10sfOff_species <- top_taxa(sfOffshore,
                   n_taxa = 10)
 top10sfOff_species
 ```
+
+
+
+###To convert phyloseq object to dataframe use metagMisc
+```{r}
+devtools::install_github("vmikk/metagMisc")
+library(vmikk/metagMisc)
+
+install.packages("remotes")
+remotes::install_github("vmikk/metagMisc")
+```
+
+
+###Species per Zone 
+```{r}
+sfSHR_species <- top_taxa(sfSHR, 
+                  tax_level = "Species",
+                  n_taxa = 30)
+sfSHR_species
+#psmelt(sfSHR_species)
+#write.csv(sfSHR_species,file = "./sfSHR_species.csv")
+```
+
+```{r}
+sfLGN_species <- top_taxa(sfLGN, 
+                  tax_level = "Species",
+                  n_taxa = 30)
+sfLGN_species
+```
+
+```{r}
+sfFRR_species <- top_taxa(sfFRR, 
+                  tax_level = "Species",
+                  n_taxa = 30)
+sfFRR_species
+```
+
+```{r}
+sfAFZ_species <- top_taxa(sfAFZ, 
+                  tax_level = "Species",
+                  n_taxa = 30)
+sfAFZ_species
+```
+
+```{r}
+sfDFZ_species <- top_taxa(sfDFZ, 
+                  tax_level = "Species",
+                  n_taxa = 30)
+sfDFZ_species
+```
+
+```{r}
+sfNMS_species <- top_taxa(sfNMS, 
+                  tax_level = "Species",
+                  n_taxa = 30)
+sfNMS_species
+```
+

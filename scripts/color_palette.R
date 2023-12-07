@@ -25,11 +25,20 @@ pal <- cal_palette(name = "sierra1", n = var_n, type = "continuous")
 
 # Build defined color palette
 ## For the 'Near_or_Offshore' variable
-near_offshore_colors <- c(Nearshore = "#BD973D", Offshore = "#262E43")
+#near_offshore_colors <- c(Nearshore = "#BD973D", Offshore = "#262E43")
 
 ## For the 'Zone' variable
-zone_colors <- c(SHR = "#796C2E", LGN = "#4F6A46", FRR = "#3E807B", 
-                 AFZ = "#528EBE", DFZ = "#51729A", NMS = "#414E66" )
+#zone_colors <- c(SHR = "#796C2E", LGN = "#4F6A46", FRR = "#3E807B", 
+#                 AFZ = "#528EBE", DFZ = "#51729A", NMS = "#414E66" )
+
+## For the 'Near_or_Offshore' variable default R binomial color palette
+near_offshore_colors <- c(Nearshore = "#F7766D", Offshore = "#01BCC1")
+
+## For the 'Zone' variable from Viridis color palette
+zone_colors <- c(SHR = "#FDE725FF", LGN = "#95D840FF", FRR = "#29AF7FFF", 
+                 AFZ = "#287D8EFF", DFZ = "#481567FF", NMS = "#39568CFF" )
+
+
 
 # decided to not use right now - AM & CC 2023-10-12
 # # remove red color from palette - not color blind friendly
