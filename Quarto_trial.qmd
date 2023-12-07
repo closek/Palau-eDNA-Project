@@ -24,11 +24,13 @@ execute:
   warning: false
 ---
 
-# Document Purpose
+# Document Purpose & Description
 
-This document is a template for analysis and reporting eDNA results. This file is a Quarto document (a newer version of a Rmarkdown file [Intro to a Quarto doc](https://quarto.org/docs/faq/rmarkdown.html){.uri}) that can be opened in Rstudio and used to run code and build a html version of the report. The authors intended this file and larger R project folders & files to document analysis steps, make analyses reproducible, and make future analyses smoother and quicker to run.
+This document is a template for analysis and reporting eDNA results. This file is a Quarto document (a newer version of a Rmarkdown file [Intro to a Quarto doc](https://quarto.org/docs/faq/rmarkdown.html){.uri}) that can be opened in Rstudio and serve two purposes: 1) run code and 2) build a html (or pdf) report document.
 
-There are three components to this document:
+The authors intended this file along with the other folders & files within this project to document analysis steps, make analyses reproducible, and make future analyses smoother and quicker to run. See the [Quarto Website](https://quarto.org/) for a more in depth introduction to Quarto docs. The "Document Purpose & Description" section can be deleted when creating a new analysis. 
+
+## There are three components to this document (when viewing the code)
 
 1.  **YAML (yet another markdown language) header** - the code contained at the top of this document bounded by a set of `---` marks. This is a place to store document metadata and instructions for how the rest of the quarto doc should run code chunks and format rendered documents. See here for more information --\> [Authoring Docs](https://quarto.org/docs/authoring/front-matter.html){.uri} and [YAML HTML Options](https://quarto.org/docs/reference/formats/html.html#citation). We currently have the YAML set so when you Render this document a self-contained .html document will be created, this file format and formatting options can be further customized.
 
@@ -36,9 +38,37 @@ There are three components to this document:
 
 3.  **Markdown** - This bullet list is written in markdown. Markdown is a simple text and formatting language. Use this to write text in the rendered report document. Here is a quick guide to markdown syntax --\> [Markdown cheat sheet](https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf){.uri}. You can also use values and/or objects generated in your code to populate in your markdown text, see here ---\> [How to use a code value in markdown text](https://www.earthdatascience.org/courses/earth-analytics/multispectral-remote-sensing-modis/add-variables-to-rmarkdown-report/){.uri}
 
-## Code Chunk Example
+## Code Chunk Example - Run Code
 
-Below is an example of a code chunk that can run R code. You can set execution options in the YAML (`execute:`) that will be the default options for every code chunk, or you can set them in individual code chunks. More details here --\> <https://quarto.org/docs/computations/execution-options.html>
+The primary function of this document is to run code. Below is an example of a code chunk that runs R code. These are where data cleaning and analysis steps are contained. In Rstudio you can run code several ways:
+
+1.  line-by-line (just like a normal .R file)
+
+2.  chunk-by-chunk (press the green right-facing triangle at the top right corner of the code chunk)
+
+![](images/run_chunk.png)
+
+3.  all code top to bottom ()
+
+![](images/run_all.png)
+
+## Render Quarto Docs - Build Report Doc
+
+The secondary function of this document is to build a report document. This requires all the code in the Quarto document to run cleanly without errors. To build the report, click the `Render` button shown below. This will start a multistage process that runs all the code and markdown sequentially and formats it based on the YAML header and code chunk execute options.
+
+![](images/Render_button.png) There are two ways to alter/customize the resulting report:
+
+1.  The YAML header (described above). For example, to set the default execution options for all code chunks, you can add options in the YAML (`execute:`)
+
+![](images/yaml_execute.png)
+
+2.  Set run options for individual code chunks. More details here --\> <https://quarto.org/docs/computations/execution-options.html>
+
+![](images/chunk_execute.png)
+
+The final template .html product will look something like this:
+
+![](images/rendered_html_report.png)
 
 ```{r example-code-chunk}
 #| echo: true
@@ -371,7 +401,7 @@ n_distinct(esv_clean_data_df$Family)
 unique(esv_clean_data_df$Family)
 ```
 
-6)  Transform data to Phyloseq Object 
+6)  Transform data to Phyloseq Object
 
 ```{r create-phyloseq-object}
 
@@ -437,7 +467,7 @@ physeq <- phyloseq(ESV, TAX)
 physeq1 <- merge_phyloseq(physeq, samp_metadata)
 ```
 
-7) Explore Components of Phyloseq Object (if needed)
+7)  Explore Components of Phyloseq Object (if needed)
 
 ```{r explore-phyloseq}
 #sample_names(physeq1)
@@ -445,14 +475,14 @@ physeq1 <- merge_phyloseq(physeq, samp_metadata)
 #sample_variables(physeq1)
 ```
 
-8) Subset Phyloseq Samples - Keep Environmental Samples Only
+8)  Subset Phyloseq Samples - Keep Environmental Samples Only
 
 ```{r phyloseq-env-samples_only}
 physeq_env <- subset_samples(physeq1, Control_or_Envtl =="Envtl")
 # should not replace object with same name - harder to troubleshoot - new versions need new names
 ```
 
-9) Barplot - Families - Environmental Samples (excluding Controls)
+9)  Barplot - Families - Environmental Samples (excluding Controls)
 
 ```{r figure-barplot-families_enviro}
 #| label: Fam-Env-samples
