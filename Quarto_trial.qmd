@@ -520,7 +520,7 @@ physeq2 <- transform_sample_counts(physeq = physeq_env_mar_pruned,
 
 # Visualizing
 
-9)  Barplot - Families - Environmental Samples (excluding Controls)
+1)  Barplot - Families - Environmental Samples (excluding Controls)
 
 ```{r figure-barplot-families_enviro}
 #| label: Fam-Env-samples
@@ -535,30 +535,41 @@ physeq2 <- transform_sample_counts(physeq = physeq_env_mar_pruned,
 plot_bar(physeq_env, fill = "Family")
 ```
 
-13) Barplots of normalized environmental samples and marine ESVs
+2) Barplot - Normalized Environmental Samples & Marine ESVs
+
+- Family
 
 ```{r figure-barplot-normal-env-marine-family}
 plot_bar(physeq2, fill = "Family")
 ```
 
+- Order
+
 ```{r figure-barplot-normal-env-marine-order}
 plot_bar(physeq2, fill = "Order")
 ```
 
-14) Heatmaps of normalized environmental samples and marine ESVs
+3) Heatmap - Normalized Environmental Samples & Marine ESVs
+
+- Phylum
 
 ```{r figure-heatmap-normal-env-marine-phylum}
 plot_heatmap(physeq2, taxa.label="Phylum")
 ```
 
-15) Alternative barplot formats
+4) Barplot - Alternative formats
+
+- Family
 
 ```{r}
 plot_bar(physeq2, x= "Zone", fill = "Family")
 ```
 
+- Family facet wrap
+
 ```{r}
-plot_bar(physeq2, x= "Zone", fill = "Family") + facet_wrap(~Cardinal_direction)
+plot_bar(physeq2, x= "Zone", fill = "Family") + 
+  facet_wrap(~Cardinal_direction)
 ```
 
 ```{r}
@@ -616,6 +627,7 @@ po <- plot_ordination(physeq2,
 po
 
 jpeg(file="saving_plot1_rv.jpeg")
+
 ```
 
 ```{r, echo=TRUE}
