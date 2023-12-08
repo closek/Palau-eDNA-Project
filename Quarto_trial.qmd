@@ -413,7 +413,7 @@ unique(esv_clean_data_df$Family)
 ```{r create-phyloseq-object}
 #| output: false
 
-# AM - did not delete original code - review with Collin to get OK to replace with this method. Can we find a more reproducible way of selecting columns? 
+# AM - Can we find a more reproducible way of selecting columns? Explore what column names are we want to keep
 
 names(esv_clean_data_df)
 
@@ -442,7 +442,6 @@ TAX <- phyloseq::tax_table(esv_read_tax_m)
 samp_meta <- read_csv(file.path(dir_data_raw, "SampleMetaData.csv")) # Need to move this file into raw folder
 samp_meta_df <- data.frame(samp_meta, row.names = 1) # use 1st column as row names
 samp_metadata <- phyloseq::sample_data(samp_meta_df) # create phyloseq metadata
-#class(samp_metadata)
 
 #create phyloseq object
 physeq <- phyloseq(ESV, TAX)
@@ -470,6 +469,7 @@ physeq_env <- subset_samples(physeq1, Control_or_Envtl =="Envtl")
 #Select for only Classes: Actinopteri and Mammalia, which will remove Classes: Aves and Amphibia, as well as the unannotated ESVs 
 #Within Mammalia remove non-marine mammals in  Family: Bovidae, Suidae, Canidae, Felindae, Hominidae and Order: Primates
 
+# Original code - AM - does not build on subsequet "physeq1_mar" object because "Physeq_env" is used as the input every time
 # physeq_env
 # physeq1_mar <- subset_taxa(physeq_env, Class %in% c("Actinopteri", "Mammalia"))
 # physeq1_mar
