@@ -21,7 +21,7 @@
 # rendered analysis html - can change later if needed
 #*.html
 # Quarto cache documents folder
-Quarto_trial_files/
+*_files/
 # Mac specific settings
 .DS_Store
 # Ignore renv (environment versions & dependencies) cache and library
