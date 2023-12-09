@@ -626,7 +626,9 @@ po <- plot_ordination(physeq2,
                       title = "Nearshore & Offshore Samples")
 po
 
-jpeg(file="saving_plot1_rv.jpeg")
+ggsave(po,
+       device = "png",
+       filename = file.path("products/figures/plot_ordination.jpeg"))
 
 ```
 
@@ -760,9 +762,13 @@ Fig_bony_fish_leg2
 ### Marine Mammals
 
 ```{r}
-plot_bar(sfMam, fill = "Species")
+bar_plot_marine_mammals <- plot_bar(sfMam, fill = "Species")
 
-jpeg(file="saving_plot2.jpeg")
+#jpeg(file="saving_plot2.jpeg")
+ggsave(bar_plot_marine_mammals,
+       device = "jpeg",
+       filename = file.path("products/figures/Fig_bar_marine_mammals.png"))
+
 plot_bar(sfAct, fill = "Family")
 dev.off()
 ```
