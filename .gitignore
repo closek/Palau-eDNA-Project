@@ -16,8 +16,6 @@
 # analysis output folder
 /products/*
 !/products/.gitkeep
-# Quarto rendered html
-##Quarto_trial.html
 # rendered analysis html - can change later if needed
 #*.html
 # Quarto cache documents folder
@@ -42,4 +40,3 @@ renv/cache/
 *.knit.md
 # R Environment Variables
 .Renviron
-Quarto_trial.rmarkdown
