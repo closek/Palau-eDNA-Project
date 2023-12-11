@@ -466,21 +466,19 @@ physeq_env <- subset_samples(physeq1, Control_or_Envtl =="Envtl")
 
 ```{r create-env-marine-fish-mammal, echo=FALSE}
 #Select for only Classes: Actinopteri and Mammalia, which will remove Classes: Aves and Amphibia, as well as the unannotated ESVs 
-#Within Mammalia remove non-marine mammals in  Family: Bovidae, Suidae, Canidae, Felindae, Hominidae and Order: Primates
-
-# Original code - AM - does not build on subsequet "physeq1_mar" object because "Physeq_env" is used as the input every time
-# physeq_env
-# physeq1_mar <- subset_taxa(physeq_env, Class %in% c("Actinopteri", "Mammalia"))
-# physeq1_mar
-# physeq1_mar <- subset_taxa(physeq_env, !(Order %in% c("Primates")))
-# physeq1_mar
-# physeq1_mar <- subset_taxa(physeq_env, !(Family %in% c("Bovidae", "Canidae", "Felindae", "Hominidae", "Suidae")))
-# physeq1_mar
 
 physeq_env_mar <- physeq_env %>% 
-  subset_taxa(Class %in% c("Actinopteri", "Mammalia")) %>%
-  subset_taxa(!(Order %in% c("Primates"))) %>%
-  subset_taxa(!(Family %in% c("Bovidae", "Canidae", "Felindae", "Hominidae", "Suidae")))
+  subset_taxa(Class %in% c("Actinopteri", "Mammalia")) %>% # select only boney fish and mammals
+  subset_taxa(!(Order %in% c("Primates"))) %>% # remove primates
+  subset_taxa(!(Family %in% c("Bovidae", "Canidae", "Felindae", "Hominidae", "Suidae"))) # remove non-marine mammals
+
+# Explore contamination in samples
+# physeq_mar <- subset_taxa(physeq_env, Class %in% c("Actinopteri", "Mammalia"))
+# physeq_mar
+# physeq_contam_primate <- subset_taxa(physeq_env, !(Order %in% c("Primates")))
+# physeq_contam_primate
+# physeq_contam_husbandry <- subset_taxa(physeq_env, !(Family %in% c("Bovidae", "Canidae", "Felindae", "Hominidae", "Suidae")))
+# physeq_contam_husbandry
 
 ```
 
