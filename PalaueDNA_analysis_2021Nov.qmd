@@ -419,8 +419,7 @@ names(esv_clean_data_df)
 
 #create an OTU/ESV count table
 esv_read_count_m <- esv_clean_data_df %>%
-  select(-c(1)) %>% # remove first column
-  select(-c(2:19)) %>% # remove columns 2-19
+  select(-c(1,3:20)) %>% # remove first column, and columns 3-20
   data.frame(row.names = 1) %>% # convert result to data.frame object with row names
   #remove_prefix(c("X")) %>% # remove prefix from column names if needed - remove first # in this line
   # names() %>% # if prefix removed above - remove first # in this line (could make this into a conditional statement)
@@ -498,12 +497,11 @@ physeq_env_mar_pruned <- prune_samples(sample_sums(physeq_env_mar)>=10000, physe
 11) Standardize number of reads to the median sequencing depth
 
 ```{r std-reads-meadian-seq-depth}
-# AM - what is this doing?
+
 total <- median(sample_sums(physeq_env_mar_pruned))
 standf <- function(x, t=total) round(t *(x / sum(x)))
 physeq2 <- transform_sample_counts(physeq = physeq_env_mar_pruned, 
                                    fun = standf)
-
 ```
 
 ```{r}
@@ -535,37 +533,37 @@ physeq2 <- transform_sample_counts(physeq = physeq_env_mar_pruned,
 plot_bar(physeq_env, fill = "Family")
 ```
 
-2) Barplot - Normalized Environmental Samples & Marine ESVs
+2)  Barplot - Normalized Environmental Samples & Marine ESVs
 
-- Family
+-   Family
 
 ```{r figure-barplot-normal-env-marine-family}
 plot_bar(physeq2, fill = "Family")
 ```
 
-- Order
+-   Order
 
 ```{r figure-barplot-normal-env-marine-order}
 plot_bar(physeq2, fill = "Order")
 ```
 
-3) Heatmap - Normalized Environmental Samples & Marine ESVs
+3)  Heatmap - Normalized Environmental Samples & Marine ESVs
 
-- Phylum
+-   Phylum
 
 ```{r figure-heatmap-normal-env-marine-phylum}
 plot_heatmap(physeq2, taxa.label="Phylum")
 ```
 
-4) Barplot - Alternative formats
+4)  Barplot - Alternative formats
 
-- Family
+-   Family
 
 ```{r}
 plot_bar(physeq2, x= "Zone", fill = "Family")
 ```
 
-- Family facet wrap
+-   Family facet wrap
 
 ```{r}
 plot_bar(physeq2, x= "Zone", fill = "Family") + 
