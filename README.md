@@ -13,7 +13,6 @@ Repository for Analysis template and current analysis versions
 
 - [Repository overview](#repository-overview)
 - [Installation](#installation)
-- [Usage](#usage)
 - [Credits](#credits)
 - [License](#license)
 
@@ -25,6 +24,7 @@ The directory structure and files:
 ├── data
 │   ├── raw
 │   └── processed
+├── images
 ├── products
 ├── renv
 │   ├── activate.R
@@ -33,13 +33,14 @@ The directory structure and files:
 │   └── color_palette.R
 ├── .Rprofile
 ├── .gitignore
-├── Quarto_trial.html
-├── Quarto_trial.qmd
+├── PalaueDNA.Rproj
+├── PalaueDNA_analysis_Nov2021.qmd
+├── PalaueDNA_analysis_template.qmd
 ├── README.md
 └── renv.lock
 ```
 
-Folder and file descriptions:
+Folder descriptions:
 
 - `data/` contains 2 subfolders:  `raw/` and `processed/`.
   - put your data in the `raw/` folder
@@ -48,11 +49,22 @@ Folder and file descriptions:
 - `renv/` stores the project package version control
   - do not need to directly interact with these files - they are used in several `renv::` package commands
 - `scripts/` folder contains short pieces of R code that do specific things (i.e. scripts)
-  - can be run within the analysis 
+  - can be run within the analysis
+ 
+File Descirptions:
+
+- `.Rprofile` stores Rstudio preferences for running code (hidden file)
+- `.gitignore` list of file that git will not pay attention to or track
+- `PalaueDNA.Rproj` R project container all code and files run in this mini environment
+- `PalaueDNA_analysis_[...].qmd` Analysis files for specific sampling events (MonthYear)
+- `PalaueDNA_analysis_template.qmd` Template for analysis and visualization. Make a copy of this file and rename copy to start a new analysis. Update this file to make changes for future analyses.
+- `README.md` contains project description and instruction in markdown
+- `renv.lock` record of package dependencies and versions used to construct this project. 
 
 ## Installation
 
-1) Clone this repository to your local machine (choose one method)
+1) Copy this repository to your local machine (choose one method)
+  - Download Software from Zenodo --> [paste future DOI badge here]
   - In the command line:
 ```bash
 # run in command line shell
@@ -95,12 +107,6 @@ We used the `renv` package to manage & record package versions. This records the
 - *Note* You may need to download a different version of R to work with this project
   - Windows --> [https://cran.r-project.org/bin/windows/base/old/](https://cran.r-project.org/bin/windows/base/old/)
   - MacOS --> [https://cran-archive.r-project.org/bin/macosx/](https://cran-archive.r-project.org/bin/macosx/)
-
-## Usage
-
-Provide instructions and examples for use. Include screenshots as needed.
-
-To add a screenshot, create an `assets/images` folder in your repository and upload your screenshot to it. Then, using the relative filepath, add it to your README using the following syntax:
 
 ## Credits
 
