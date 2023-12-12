@@ -1,0 +1,980 @@
+---
+title: "Palau eDNA Report Template"
+subtitle: "Subtitle Here"
+author: 
+  - name: "Author name 1"
+    affiliation: "Organization 1"
+    email: "author1@email.com"
+  - name: "Author name 2"
+    afflication: "Organizaton 2"
+    email: "author2@email.com"
+date: "`r Sys.Date()`"
+format: 
+  html:
+    number-sections: true
+    toc: true
+    code-tools: true
+    theme: mintly
+    number-depth: 2
+    self-contained: true
+title-block-banner: "#33ccffff"
+title-block-banner-color: "#ffdd00ff"
+code-fold: true
+editor: visual
+editor_options: 
+  chunk_output_type: inline
+execute: 
+  eval: true
+  echo: false
+  warning: false
+---
+
+# Document Purpose
+
+This document is a template for analysis and reporting eDNA results. This file is a Quarto document (a newer version of a Rmarkdown file [Intro to a Quarto doc](https://quarto.org/docs/faq/rmarkdown.html){.uri}) that can be opened in Rstudio and serve two purposes: 1) run code and 2) build a html (or pdf) report document.
+
+The authors intended this file along with the other folders & files within this project to document analysis steps, make analyses reproducible, and make future analyses smoother and quicker to run. See the [Quarto Website](https://quarto.org/) for a more in depth introduction to Quarto docs. The "Document Purpose & Description" section can be deleted when creating a new analysis.
+
+## Document Components
+
+1.  **YAML (yet another markdown language) header** - the code contained at the top of this document bounded by a set of `---` marks. This is a place to store document metadata and instructions for how the rest of the quarto doc should run code chunks and format rendered documents. See here for more information --\> [Authoring Docs](https://quarto.org/docs/authoring/front-matter.html){.uri} and [YAML HTML Options](https://quarto.org/docs/reference/formats/html.html#citation). We currently have the YAML set so when you Render this document a self-contained .html document will be created, this file format and formatting options can be further customized.
+
+2.  **Code chunks** - code chunks are like mini code scripts. In a quarto doc you can run these individually by clicking on the green arrow/triangle in the upper right corner of the chunk OR using your "run code" shortcut. These chunks are allow to user to write text in between code, and provide instructions on how the code should be incorporated into the rendered document, including how figures should be displayed. See here for more information --\> [Code chunk options (work in both quarto and Rmarkdown docs)](https://quarto.org/docs/computations/execution-options.html){.uri}
+
+3.  **Markdown** - This bullet list is written in markdown. Markdown is a simple text and formatting language. Use this to write text in the rendered report document. Here is a quick guide to markdown syntax --\> [Markdown cheat sheet](https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf){.uri}. You can also use values and/or objects generated in your code to populate in your markdown text, see here ---\> [How to use a code value in markdown text](https://www.earthdatascience.org/courses/earth-analytics/multispectral-remote-sensing-modis/add-variables-to-rmarkdown-report/){.uri}
+
+## Code Chunk Example - Run Code
+
+The primary function of this document is to run code. Below is an example of a code chunk that runs R code. These are where data cleaning and analysis steps are contained. In Rstudio you can run code several ways:
+
+```{r example-code-chunk}
+#| echo: true
+
+# Code chunk example
+
+# The coding language is indicated in the very first line, within the curly brackets {}. 
+# Use `#| ` to set options for the individual code chunk below the first line of the code chunk.
+
+# A code chunk execute option `echo: true` enables the printing of code output in rendered report 
+
+# here is example R code. To write comments within a code chunk, use a # at the beginning of the line, lines with # will not be run within a code chunk.
+test <- 1 + 1
+test_2 <- test * 6
+test_2
+```
+
+1.  line-by-line (just like a normal .R file)
+
+2.  chunk-by-chunk (press the green right-facing triangle at the top right corner of the code chunk)
+
+![](images/run_chunk.png)
+
+3.  all code top to bottom ()
+
+![](images/run_all.png)
+
+## Render Quarto Docs - Build Report Doc
+
+The secondary function of this document is to build a report document. This requires all the code in the Quarto document to run cleanly without errors. To build the report, click the `Render` button shown below. This will start a multistage process that runs all the code and markdown sequentially and formats it based on the YAML header and code chunk execute options.
+
+![](images/Render_button.png) There are two ways to alter/customize the resulting report:
+
+1.  The YAML header (described above). For example, to set the default execution options for all code chunks, you can add options in the YAML (`execute:`)
+
+![](images/yaml_execute.png)
+
+2.  Set run options for individual code chunks. More details here --\> <https://quarto.org/docs/computations/execution-options.html>
+
+![](images/chunk_execute.png)
+
+The final template .html product will look something like this:
+
+![](images/rendered_html_report.png)
+
+# Analysis Template
+
+Below is the code required for eDNA analysis
+
+## Setup
+
+### Load packages
+
+We used the `renv` package to manage & record package versions. This records the version of R, package versions, and their dependencies into a file `renv.lock` at the root of this `.Rproj`. The purpose of this is to allow users on different computer setups and in the future to reproduce the results of this project in the same way. This is because different package versions can behave differently version to version, and even introduce errors or produced different results. By using the same exact set of package versions that the authors used to write the code, the same results can be reproduced and prevent unintended errors.
+
+`Renv` creates a separate custom project library that is separate from the system library typically used when the `library()` function is called. This means that when you recreate the `renv` project library by calling `renv::restore()` you will likely need to install many packages. Many may be already installed in your system library, but they will need to be installed again into this custom `renv` project library with the exact version recorded in the `renv.lock` file. All files, folders, and scripts within the `.Rproj` will share the `renv` project library.
+
+For more information about `renv` and how to add/update the `renv` project library -\> [ ](https://rstudio.github.io/renv/articles/renv.html).
+
+::: callout-warning
+Although this package management strategy is meant to reduce errors among future users, it is not perfect. The authors found that the `renv` project library could not yet be recreated on a M1 chip Apple computer (2023-10).
+:::
+
+```{r load-packages}
+#| output: false
+
+# load renv packages from project renv.lock file
+#renv::restore()
+
+library(renv)
+library(tidyverse) # this include tidyr, ggplot2, dplyr for data manipulation and graphing
+library(vegan)
+library(data.table)
+library(superheat)
+library(calecopal) # color palette
+library(viridisLite) # color blind & gray scale friendly color palette
+library(cowplot) # create graphs with multiple components in a grid
+library(viridisLite)
+#library(fantaxtic)
+library(magrittr) # contains pipe function "%>%"
+#devtools::install_github("joey711/phyloseq")
+library(phyloseq)
+packageVersion("phyloseq")
+library(owmr)
+library(devtools)
+#BiocManager::install("MicrobiotaProcess")
+library(MicrobiotaProcess)
+library(patchwork)
+#devtools::install_github("r-lib/conflicted")
+library(conflicted)
+
+```
+
+###  Create paths to folders
+
+```{r file-directories-paths}
+# create file paths to folders within the project for easy & consistent reference throughout the analysis
+
+# path to raw data folder
+dir_data_raw <- file.path("./data/raw")
+# path to processed / clean data folder
+dir_data_proc <- file.path("./data/processed")
+# path to code outputs folder
+dir_products <- file.path("./products")
+# path to code scripts folder
+dir_scripts <- file.path("./scripts")
+# path to images for report
+dir_images <- file.path("./images")
+
+######## create folders if they do not exist
+# data folder
+if (!dir.exists(file.path("./data/"))) {
+  dir.create(file.path("./data/"))
+}
+# raw data folder
+if (!dir.exists(dir_data_raw)) {
+  dir.create(dir_data_raw)
+}
+# processed data folder
+if (!dir.exists(dir_data_proc)) {
+  dir.create(dir_data_proc)
+}
+# outputs folder
+if (!dir.exists(dir_products)) {
+  dir.create(dir_products)
+}
+# scripts folder
+if (!dir.exists(dir_scripts)) {
+  dir.create(dir_scripts)
+}
+# images folder
+if (!dir.exists(dir_images)) {
+  dir.create(dir_images)
+}
+
+```
+
+###  Set analysis date
+
+```{r set-analysis-date}
+# set this variable here, used throughout analysis for file naming. Used to differentiate between analyses using the same analysis template on different data
+analysis_date <- "2021_11"
+```
+
+###  Load data
+
+```{r load-data}
+esv_data_all <- read_csv(file.path(dir_data_raw, "JVB1710-MiFishU-read-data.csv"))
+# ESV - exact sequence variant
+
+# to see a snippet of the data run the following code in the console 
+#glimpse(esv_data_all)
+```
+
+## Clean & save data
+
+###  Clean & organize data
+
+The code chunk below "clean-data" is separated into its own `./scripts/clean_data.R` file and sourced by calling `source(file.path(dir_scripts, clean_data.R)` here. If you are looking save space in this analysis document, or want to reuse this exact same data cleaning protocol in different analysis document. The same goes for "create-nearshore-offshore-data" and "create-near-offshore-species-list" chunks, they could be their own scripts or be added to a clean_data script. If you choose to do this, the "example-source-clean-data" chunk below can be used.
+
+```{r read-run-clean-data}
+# only run the script if the output .csv file does not yet exist
+# load data if it already exsists
+if (!file.exists(file.path(dir_data_proc, paste0("esv_clean_data_rv_", analysis_date, ".csv")))) {
+  source(file.path(dir_scripts, "clean_data.R")) # run cleaning script in scripts folder
+  cat("ran cleaning script")
+} else {esv_clean_data_df <- read_csv(file.path(dir_data_proc, 
+                                        paste0("esv_clean_data_rv_", analysis_date, ".csv")))
+        cat("loaded exsisting clean data")
+}
+
+
+```
+
+###  Create Nearshore & Offshore dataframes (or load if they already exist)
+
+```{r create-nearshore-offshore-data}
+# store file names in objects to reuse & reference. Change here if needed, and will be automatically used through out code
+file_offshore_esv <- paste0("offshore_esv_", analysis_date, ".csv")
+file_nearshore_esv <- paste0("nearshore_esv_", analysis_date, ".csv")
+
+
+# if esv file does not exist: run code and save
+# if esv file does exist: load file
+
+##### offshore
+if (!dir.exists(file.path(dir_data_proc, file_offshore_esv))) {
+  # create offshore_esv dataframe
+  offshore_esv <- esv_clean_data_df %>% 
+    select(2, 6, 7, 8, 9, 10, contains('COS'), contains('AFZ'), contains('DFZ'), contains('NMS'))
+  # save dataframe as .csv
+  write_csv(offshore_esv, 
+            file = file.path(dir_data_proc, file_offshore_esv))
+  # if file exists - read it in
+} else (offshore_esv <- read_csv(file.path(dir_data_proc, file_offshore_esv)) )
+
+###### nearshore
+if (!dir.exists(file.path(dir_data_proc, file_nearshore_esv))) {
+  # create offshore_esv dataframe
+  nearshore_esv <- esv_clean_data_df %>% 
+    select(2, 6, 7, 8, 9, 10, contains('COS'), contains('SHR'), contains('LGN'), contains('FRR'))
+  # save dataframe as .csv
+  write_csv(nearshore_esv, 
+            file = file.path(dir_data_proc, file_nearshore_esv))
+  # if file exists - read it in
+} else (nearshore_esv <- read_csv(file.path(dir_data_proc, file_nearshore_esv)) )
+
+```
+
+###  Create Nearshore & Offshore species dataframes (or load if they already exist)
+
+```{r create-near-offshore-species-list}
+# store file names for reuse
+file_offshore_esv_sp <- paste0("offshore_esv_sp_", analysis_date, ".csv")
+file_nearshore_esv_sp <- paste0("nearshore_esv_sp_", analysis_date, ".csv")
+# similar to code chunk above - if output file already exists, data will load, if not data created
+
+#### offshore species
+if (!dir.exists(file.path(dir_data_proc, file_offshore_esv_sp))) {
+  # create offshore species list
+  offshore_esv_sp <- esv_clean_data_df %>% 
+    select(2, 10, contains('COS'), contains('AFZ'), contains('DFZ'), contains('NMS'))
+  # save dataframe as .csv
+  write_csv(offshore_esv_sp, 
+            file = file.path(dir_data_proc, file_offshore_esv_sp))
+  # if file exists - read it in
+} else (offshore_esv_sp <- read.csv(file.path(dir_data_proc, file_offshore_esv_sp)))
+
+#### nearshore species
+if (!dir.exists(file.path(dir_data_proc, file_nearshore_esv_sp))) {
+  #create nearshore species list
+  nearshore_esv_sp <- esv_clean_data_df %>% 
+    select(2, 10, contains('COS'), contains('SHR'), contains('LGN'), contains('FRR'))
+  # save dataframe as .csv
+  write_csv(nearshore_esv_sp, 
+            file = file.path(dir_data_proc, file_nearshore_esv_sp))
+  # if file exists - read it in
+} else (nearshore_esv_sp <- read_csv(file.path(dir_data_proc, file_nearshore_esv_sp)))
+```
+
+## Data Analysis
+
+###  Unique Species
+
+```{r unique-species}
+#| eval: false
+n_distinct(esv_clean_data_df$Species)
+unique(esv_clean_data_df$Species)
+```
+
+###  Unique Species - nearshore
+
+```{r unique-nearshore-species}
+#| eval: false
+
+# filters out (removes) all rows from the dataframe nearshore_esv that contain only zeros, keeping only the rows that have at least one non-zero element
+ns_esv <- nearshore_esv[rowSums(nearshore_esv==0, na.rm=TRUE)<ncol(nearshore_esv), ]
+
+#filters out all rows from nearshore_esv whose sum across all columns is 0 or negative, keeping only rows where this sum is positive
+#nearshore_esv[rowSums(nearshore_esv[])>0,]
+
+n_distinct(nearshore_esv$Species)
+unique(nearshore_esv$Species)
+```
+
+###  Unique Species - offshore
+
+```{r unique-offshore-species}
+#| eval: false
+
+n_distinct(offshore_esv$Species)
+unique(offshore_esv$Species)
+```
+
+###  Unique Genera
+
+```{r unique-genera}
+#| eval: false
+
+n_distinct(esv_clean_data_df$Genus)
+unique(esv_clean_data_df$Genus)
+```
+
+###  Unique Families
+
+```{r unique-families}
+#| eval: false
+
+n_distinct(esv_clean_data_df$Family)
+unique(esv_clean_data_df$Family)
+```
+
+###  Transform data to Phyloseq Object
+
+```{r create-phyloseq-object}
+#| output: false
+
+# AM - Can we find a more reproducible way of selecting columns? Explore what column names are we want to keep
+
+names(esv_clean_data_df)
+
+#create an OTU/ESV count table
+esv_read_count_m <- esv_clean_data_df %>%
+  select(-c(1,3:20)) %>% # remove first column, and columns 3-20
+  data.frame(row.names = 1) %>% # convert result to data.frame object with row names
+  #remove_prefix(c("X")) %>% # remove prefix from column names if needed - remove first # in this line
+  # names() %>% # if prefix removed above - remove first # in this line (could make this into a conditional statement)
+  as.matrix() # convert data.frame to matrix object class
+
+
+ESV <- phyloseq::otu_table(esv_read_count_m, taxa_are_rows = TRUE)
+
+#create a taxonomy table
+esv_read_tax_m <- esv_clean_data_df %>%
+  select(-c(1,3)) %>% # remove columns 1 and 3 - AM will this be standard across datasets? can we make this into positive selection to make more concise?
+  select(-c(9:195)) %>% # remove columns 9 through 195
+  data.frame(row.names = 1) %>% # convert to data.frame class with row names
+  as.matrix() # convert to matrix object
+ 
+TAX <- phyloseq::tax_table(esv_read_tax_m) 
+
+#create a sample metadata 
+samp_meta <- read_csv(file.path(dir_data_raw, "SampleMetaData.csv")) # Need to move this file into raw folder
+samp_meta_df <- data.frame(samp_meta, row.names = 1) # use 1st column as row names
+samp_metadata <- phyloseq::sample_data(samp_meta_df) # create phyloseq metadata
+
+#create phyloseq object
+physeq <- phyloseq(ESV, TAX)
+# merge phyloseq metadata with phyloseq object
+physeq1 <- merge_phyloseq(physeq, samp_metadata)
+```
+
+###  Explore Components of Phyloseq Object (if needed)
+
+```{r explore-phyloseq}
+#sample_names(physeq1)
+#rank_names(physeq1)
+#sample_variables(physeq1)
+#rank_names(physeq1)
+```
+
+###  Subset Phyloseq Samples - Keep Environmental Samples Only
+
+```{r phyloseq-env-samples_only}
+physeq_env <- subset_samples(physeq1, Control_or_Envtl =="Envtl")
+```
+
+###  Subset Phyloseq Environmental Samples - ESVs with marine fish and mammal annotations
+
+```{r create-env-marine-fish-mammal, echo=FALSE}
+#Select for only Classes: Actinopteri and Mammalia, which will remove Classes: Aves and Amphibia, as well as the unannotated ESVs 
+
+physeq_env_mar <- physeq_env %>% 
+  subset_taxa(Class %in% c("Actinopteri", "Mammalia")) %>% # select only boney fish and mammals
+  subset_taxa(!(Order %in% c("Primates"))) %>% # remove primates
+  subset_taxa(!(Family %in% c("Bovidae", "Canidae", "Felindae", "Hominidae", "Suidae"))) # remove non-marine mammals
+
+# Explore contamination in samples
+# physeq_mar <- subset_taxa(physeq_env, Class %in% c("Actinopteri", "Mammalia"))
+# physeq_mar
+# physeq_contam_primate <- subset_taxa(physeq_env, !(Order %in% c("Primates")))
+# physeq_contam_primate
+# physeq_contam_husbandry <- subset_taxa(physeq_env, !(Family %in% c("Bovidae", "Canidae", "Felindae", "Hominidae", "Suidae")))
+# physeq_contam_husbandry
+
+```
+
+### Environmental Marine Samples With More Than 10,000 Sequences
+
+```{r env-marine-more-than-10k}
+# create new phyloseq object - Environmental Marine fish and mammal samples with less than 10,000 sequences
+physeq_env_mar_lt10k <- prune_samples(sample_sums(physeq_env_mar)<10000, physeq_env_mar)
+
+# create new phyloseq object - Environmental Marine fish and mammal samples with greater than 10,000 sequences
+physeq_env_mar_pruned <- prune_samples(sample_sums(physeq_env_mar)>=10000, physeq_env_mar)
+```
+
+### Standardize number of reads to the median sequencing depth
+
+```{r std-reads-meadian-seq-depth}
+
+total <- median(sample_sums(physeq_env_mar_pruned))
+standf <- function(x, t=total) round(t *(x / sum(x)))
+physeq_mar_std <- transform_sample_counts(physeq = physeq_env_mar_pruned, 
+                                   fun = standf)
+```
+
+```{r}
+# AM - can we remove?
+
+#rcurve(physeq_mar_std, add_sample_data = TRUE)
+#p <- ggrare(physeq_mar_std, step = 500, color = "Zone", label = "Sample", se = FALSE)
+
+#sample_data(physeq_mar_std)
+#TopNESVs <- names(sort(taxa_sums(physeq_mar_std), TRUE)[1:30])
+#physeq_mar_std_30 <- prune_taxa(TopNESVs, physeq_mar_std$Species)
+#print(physeq_mar_std_30)
+```
+
+### Subset taxa
+
+```{r, subset_taxa}
+#| echo: false
+# Chat GPT description - x represents the abundance data for a single taxon (like a species) across all samples. The function calculates the coefficient of variation, which is the standard deviation (sd(x)) divided by the mean (mean(x)), of this abundance data. The criterion for keeping a taxon in the dataset is that this coefficient of variation must be greater than 3.0. In simpler terms, it filters out taxa whose abundance varies less across samples compared to those whose abundance varies more.
+sf = filter_taxa(physeq_mar_std, function(x) sd(x)/mean(x) > 3.0, TRUE)
+
+# Extract the taxonomic data as a data frame
+tax_data <- as.data.frame(phyloseq::tax_table(sf))
+
+##### Subset by boney fish
+# Check if 'Actinopteri' is in the 'Class' column
+if("Actinopteri" %in% tax_data$Class) {
+  # Subset if 'Actinopteri' is found
+  physeq_std_Act <- subset_taxa(sf, Class == "Actinopteri")
+  cat("Subset created successfully\n")
+} else {
+  # Handle the case where 'Actinopteri' is not found
+  cat("'Actinopteri' not found in the Class column\n")
+}
+
+##### Subset by Mammals 
+# Check if 'Mammalia' is in the 'Class' column
+if("Mammalia" %in% tax_data$Class) {
+  # Subset if 'Mammalia' is found
+  physeq_std_Mar <- subset_taxa(sf, Class == "Mammalia")
+  cat("Subset created successfully\n")
+} else {
+  # Handle the case where 'Mammalia' is not found
+  cat("'Mammalia' not found in the Class column\n")
+}
+
+
+##### subset by Sharks & Rays
+# Check if 'Chondrichthyes' is in the 'Class' column
+if("Chondrichthyes" %in% tax_data$Class) {
+  # Subset if 'Chondrichthyes' is found
+  physeq_std_Con <- subset_taxa(sf, Class == "Chondrichthyes")
+  cat("Subset created successfully\n")
+} else {
+  # Handle the case where 'Chondrichthyes' is not found
+  cat("'Chondrichthyes' not found in the Class column\n")
+}
+
+# create dataframe from phyloseq object
+#physeq_std_Act_df <- psmelt(physeq_std_Act)
+```
+
+
+# Visualizing
+
+###  Barplot - Families - Environmental Samples (excluding Controls)
+
+```{r figure-barplot-families_enviro}
+#| label: Fam-Env-samples
+#| title: Families from Environmental samples
+#| fig-width: 6
+#| fig-asp: 0.618
+#| out-width: "40%"
+#| fig-align: center
+#| fig-format: "png"
+
+
+plot_bar(physeq_env, fill = "Family")
+```
+
+###  Barplot - Normalized Environmental Samples & Marine ESVs
+
+-   Family
+
+```{r figure-barplot-normal-env-marine-family}
+plot_bar(physeq_mar_std, fill = "Family")
+```
+
+-   Order
+
+```{r figure-barplot-normal-env-marine-order}
+plot_bar(physeq_mar_std, fill = "Order")
+```
+
+###  Heatmap - Normalized Environmental Samples & Marine ESVs
+
+-   Phylum
+
+```{r figure-heatmap-normal-env-marine-phylum}
+plot_heatmap(physeq_mar_std, taxa.label="Phylum")
+```
+
+###  Barplot - Alternative formats
+
+-   Family
+
+```{r}
+plot_bar(physeq_mar_std, x= "Zone", fill = "Family")
+```
+
+-   Family facet wrap
+
+```{r}
+plot_bar(physeq_mar_std, x= "Zone", fill = "Family") + 
+  facet_wrap(~Cardinal_direction)
+```
+
+```{r}
+#plot_net(physeq_mar_std, maxdist=0.4, color="Cardinal_direction", shape="Near_or_Offshore")
+```
+
+### Richness plots
+
+```{r}
+# plot_richness() function produces a ggplot object and can be ammended just like ggplot
+# source color palette
+source(file.path("./scripts/color_palette.R"))
+
+Fig_richness <- plot_richness(physeq_mar_std, 
+                              measures = c("Chao1", "Shannon"), 
+                              x="Near_or_Offshore", 
+                              color="Near_or_Offshore",
+                              shape="Near_or_Offshore") +
+  theme_light(base_size = 12) +
+  scale_color_manual(values = near_offshore_colors) +
+  labs(color = "Region",
+       shape = "Region") +
+  theme(axis.title.x =element_blank())
+
+Fig_richness
+
+ggsave(plot = Fig_richness, 
+       device = "png", 
+       filename = file.path("products/figures/Fig_richness_near_offshore_rv.png"),
+       dpi = 600,
+       width = 6,
+       height = 4,
+       units = "in")
+
+```
+
+```{r}
+plot_richness(physeq_mar_std, measures=c("Chao1", "Shannon"), x="Near_or_Offshore", color="Zone")
+```
+
+### Ordinations
+
+```{r}
+
+physeq_mar_std.ord <- ordinate(physeq_mar_std, "PCoA", "bray")
+# base plot ordination - other iterations are built on this object
+po <- plot_ordination(physeq_mar_std, 
+                      physeq_mar_std.ord, 
+                      type = "samples", 
+                      color = "Zone", 
+                      shape = "Near_or_Offshore", 
+                      title = "Nearshore & Offshore Samples")
+po
+
+ggsave(po,
+       device = "png",
+       filename = file.path("products/figures/plot_ordination.jpeg"))
+
+```
+
+```{r, echo=TRUE}
+Fig_ord_near_off <- po +
+  facet_wrap(~Near_or_Offshore) +
+  scale_color_manual(values = zone_colors,
+                     breaks = c("SHR", "LGN", "FRR", "AFZ", "DFZ", "NMS"),
+                     guide = guide_legend(override.aes = list(size = 3, shape = c(16,16,16,17,17,17)))) +
+  guides(shape = guide_legend(override.aes = list(size = 3, shape = c(1,2)))) +
+  theme_light() +
+  labs(shape = "Region") +
+  coord_fixed()
+
+Fig_ord_near_off
+
+ggsave(plot = Fig_ord_near_off, 
+       device = "png", 
+       filename = file.path("products/figures/Fig_ord_near_offshore_rv.png"),
+       dpi = 600,
+       width = 7,
+       height = 3.5,
+       units = "in")
+
+### USE for Prelim Report
+```
+
+```{r}
+po + 
+  facet_wrap(~Cardinal_direction) +
+    scale_color_manual(values = zone_colors,
+                     breaks = c("SHR", "LGN", "FRR", "AFZ", "DFZ", "NMS"),
+                     guide = guide_legend(override.aes = list(size = 3, shape = c(16,16,16,17,17,17)))) +
+  guides(shape = guide_legend(override.aes = list(size = 3, shape = c(1,2)))) +
+  theme_light() +
+  labs(shape = "Region") +
+  coord_fixed()
+```
+
+```{r}
+Fig_ord_near_off_grid <- po +
+  facet_wrap(~factor(Zone, levels = c("SHR", "LGN", "FRR", "AFZ", "DFZ", "NMS"))) +
+  scale_color_manual(values = zone_colors,
+                     breaks = c("SHR", "LGN", "FRR", "AFZ", "DFZ", "NMS"),
+                     guide = guide_legend(override.aes = list(size = 3, shape = c(16,16,16,17,17,17)))) +
+  guides(shape = guide_legend(override.aes = list(size = 3, shape = c(1,2)))) +
+  theme_light() +
+  labs(shape = "Region") +
+  coord_fixed()
+
+Fig_ord_near_off_grid
+
+ggsave(plot = Fig_ord_near_off_grid, 
+       device = "png", 
+       filename = file.path("products/figures/Fig_ord_near_offshore_grid_rv.png"),
+       dpi = 600,
+       width = 7,
+       height = 5,
+       units = "in")
+#ORDER BY NEARSHORE & OFFSHORE
+###USE for Prelim Report
+```
+
+### Marine Actinopteri (Bony Fish) bar plot
+
+```{r, cache=TRUE}
+
+# reorder s4 phyloseq object Sample data by Near_or_Offshore
+# data_to_rearrange <- physeq_std_Act@sam_data$Sample
+# data_to_order_by <- physeq_std_Act@sam_data$Near_or_Offshore
+# ordering <- order(data_to_order_by)
+# physeq_std_Act@sam_data$Sample <- data_to_rearrange[ordering]
+
+
+fish_color <- viridis(n = 90, option = "turbo")
+
+Fig_bony_fish <- plot_bar(physeq_std_Act, fill = "Family") +
+  theme_classic() +
+  theme(axis.title.x = element_blank(),
+        axis.text.x = element_blank(),
+        axis.line.x.bottom = element_blank(),
+        axis.ticks.x = element_blank(),
+        legend.position="bottom") +
+  guides(fill = guide_legend(ncol=10)) +
+  scale_y_continuous(expand = c(0,0)) +
+  scale_fill_manual(values = fish_color)
+
+# extract legend
+bony_fish_legend <- cowplot::get_legend(Fig_bony_fish# + 
+  # create some space to the left of the legend
+ # theme(legend.box.margin = margin(0, 0, 0, 0))
+)
+
+# place figure without legend on grid
+Fig_bony_fish_leg <- cowplot::plot_grid(
+  Fig_bony_fish +
+  theme(legend.position="none")
+ )
+
+# add legend to gird
+Fig_bony_fish_leg2 <- cowplot::plot_grid(
+  Fig_bony_fish_leg,
+  bony_fish_legend,
+  align = "v",
+  nrow = 2,
+  ncol = 1,
+  rel_heights = c(3,1),
+  scale =  1
+) 
+
+#Fig_bony_fish_leg2
+
+ggsave(plot = Fig_bony_fish_leg2,
+       device = "png",
+       filename = file.path("products/figures/Fig_bony_fish.png"),
+       dpi = 600,
+       width = 7,
+       height = 5,
+       scale = 2,
+       units = "in")
+
+Fig_bony_fish_leg2
+```
+
+### Marine Mammals
+
+```{r}
+bar_plot_marine_mammals <- plot_bar(physeq_std_Mar, fill = "Species")
+
+#jpeg(file="saving_plot2.jpeg")
+ggsave(bar_plot_marine_mammals,
+       device = "jpeg",
+       filename = file.path("products/figures/Fig_bar_marine_mammals.png"))
+
+plot_bar(physeq_std_Act, fill = "Family")
+dev.off()
+```
+
+### Marine Chondrichthyes (Sharks & Rays)
+
+```{r bar_plot_chondrichthyes}
+# First, check if the 'physeq_std_Con' object exists in the global environment
+if(exists("physeq_std_Con")) {
+    # Check if it's a valid phyloseq object and contains species-level data
+    if (!is.null(physeq_std_Con) && "Species" %in% rank_names(physeq_std_Con)) {
+        # Plot if it's a valid phyloseq object with species data
+        p <- plot_bar(physeq_std_Con, fill = "Species") # add ggplot graph things here! 
+        print(p)
+    } else {
+        cat("The phyloseq object 'physeq_std_Con' is either null or does not contain species-level data.\n")
+    }
+} else {
+    # If the object does not exist in the global environment
+    cat("'physeq_std_Con' does not exist.\n")
+}
+
+```
+
+### Top10
+
+```{r}
+OTUnames10 = names(sort(taxa_sums(sf), TRUE)[1:10])
+sf10  = prune_taxa(OTUnames10,  sf)
+
+sf10near = names(subset(sample_data(sf), Near_or_Offshore=="Nearshore"))
+sf10off = names(subset(sample_data(sf), Near_or_Offshore=="Offshore"))
+
+top10 <- names(sort(taxa_sums(sf), decreasing = TRUE)[1:10])
+
+phyloseq::tax_table(sf)[top10,]
+print(sf10near)
+print(sf10off)
+
+
+```
+
+###Subsetting and pruning Nearshore and Offshore sample sets
+
+```{r}
+sample_variables(physeq_mar_std)
+
+phyloseq::tax_table(sf10)[top10,]
+
+sfNearshore <- subset_samples(sf, Near_or_Offshore == "Nearshore")
+sfNearshore
+
+sfOffshore <- subset_samples(sf, Near_or_Offshore == "Offshore")
+sfOffshore
+
+#test <- phyloseq::prune_samples(sample_sums(sfNearshore)>=1, sfNearshore)
+#test
+#sfNearshore
+
+#test2 <- phyloseq::prune_samples(sample_sums(sfOffshore)>=1, sfOffshore)
+#test2
+#sfOffshore
+
+sfNearshore <- phyloseq::prune_taxa(taxa_sums(sfNearshore)>=1, sfNearshore)
+sfNearshore
+
+sfOffshore <- phyloseq::prune_taxa(taxa_sums(sfOffshore)>=1, sfOffshore)
+sfOffshore
+
+sfNearshore
+sfOffshore
+```
+
+###Subset by Zones
+
+```{r}
+sfSHR <- subset_samples(sf, Zone == "SHR")
+sfSHR
+
+sfLGN <- subset_samples(sf, Zone == "LGN")
+sfLGN
+
+sfFRR <- subset_samples(sf, Zone == "FRR")
+sfFRR
+
+sfAFZ <- subset_samples(sf, Zone == "AFZ")
+sfAFZ
+
+sfDFZ <- subset_samples(sf, Zone == "DFZ")
+sfDFZ
+
+sfNMS <- subset_samples(sf, Zone == "NMS")
+sfNMS
+
+
+sfSHR <- phyloseq::prune_taxa(taxa_sums(sfSHR)>=1, sfSHR)
+sfSHR
+
+sfLGN <- phyloseq::prune_taxa(taxa_sums(sfLGN)>=1, sfLGN)
+sfLGN
+
+sfFRR <- phyloseq::prune_taxa(taxa_sums(sfFRR)>=1, sfFRR)
+sfFRR
+
+sfAFZ <- phyloseq::prune_taxa(taxa_sums(sfAFZ)>=1, sfAFZ)
+sfAFZ
+
+sfDFZ <- phyloseq::prune_taxa(taxa_sums(sfDFZ)>=1, sfDFZ)
+sfDFZ
+
+sfNMS <- phyloseq::prune_taxa(taxa_sums(sfNMS)>=1, sfNMS)
+sfNMS
+
+```
+
+###Family counts of physeq_mar_std object (sf)
+
+```{r}
+get_taxa_unique(sf, "Family")
+#93
+get_taxa_unique(sfNearshore, "Family")
+#79
+get_taxa_unique(sfOffshore, "Family")
+#53
+```
+
+### Genus counts of physeq_mar_std object (sf)
+
+```{r}
+get_taxa_unique(sf, "Genus")
+#260
+get_taxa_unique(sfNearshore, "Genus")
+#232
+get_taxa_unique(sfOffshore, "Genus")
+#83
+```
+
+### Species counts of physeq_mar_std object (sf)
+
+```{r}
+get_taxa_unique(sf, "Species")
+#389
+get_taxa_unique(sfNearshore, "Species")
+#346
+get_taxa_unique(sfOffshore, "Species")
+#81
+```
+
+### Top
+
+```{r}
+top5sf_species <- sort(tapply(taxa_sums(sf), phyloseq::tax_table(sf) [, "Family"], sum), decreasing = TRUE)[1:5]
+
+names(sort(taxa_sums(sf), decreasing = TRUE)[1:10])
+
+```
+
+### Top Species
+
+```{r}
+devtools::install_github("gmteunisse/fantaxtic")
+require("fantaxtic")
+
+top10sf_species <- top_taxa(sf, 
+                  tax_level = "Species",
+                  n_taxa = 10,
+                  grouping = "Near_or_Offshore")
+top10sf_species
+```
+
+### Top Nearshore Species
+
+```{r}
+top10sfNear_species <- top_taxa(sfNearshore, 
+                  tax_level = "Species",
+                  n_taxa = 10)
+top10sfNear_species
+```
+
+### Top Offshore Species
+
+```{r}
+top10sfOff_species <- top_taxa(sfOffshore, 
+                  tax_level = "Species",
+                  n_taxa = 10)
+top10sfOff_species
+```
+
+###To convert phyloseq object to dataframe use metagMisc
+
+```{r}
+#| eval: false
+devtools::install_github("vmikk/metagMisc")
+library(vmikk/metagMisc)
+```
+
+###Species per Zone
+
+```{r}
+sfSHR_species <- top_taxa(sfSHR, 
+                  tax_level = "Species",
+                  n_taxa = 30)
+sfSHR_species
+#psmelt(sfSHR_species)
+#write_csv(sfSHR_species, file.path(dir_data_proc, "sfSHR_species.csv"))
+```
+
+```{r}
+sfLGN_species <- top_taxa(sfLGN, 
+                  tax_level = "Species",
+                  n_taxa = 30)
+sfLGN_species
+```
+
+```{r}
+sfFRR_species <- top_taxa(sfFRR, 
+                  tax_level = "Species",
+                  n_taxa = 30)
+sfFRR_species
+```
+
+```{r}
+sfAFZ_species <- top_taxa(sfAFZ, 
+                  tax_level = "Species",
+                  n_taxa = 30)
+sfAFZ_species
+```
+
+```{r}
+sfDFZ_species <- top_taxa(sfDFZ, 
+                  tax_level = "Species",
+                  n_taxa = 30)
+sfDFZ_species
+```
+
+```{r}
+sfNMS_species <- top_taxa(sfNMS, 
+                  tax_level = "Species",
+                  n_taxa = 30)
+sfNMS_species
+```
