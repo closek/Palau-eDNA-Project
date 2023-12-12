@@ -123,6 +123,7 @@ library(superheat)
 library(calecopal) # color palette
 library(viridisLite) # color blind & gray scale friendly color palette
 library(cowplot) # create graphs with multiple components in a grid
+library(viridisLite)
 #library(fantaxtic)
 library(magrittr) # contains pipe function "%>%"
 #devtools::install_github("joey711/phyloseq")
@@ -514,6 +515,56 @@ physeq_mar_std <- transform_sample_counts(physeq = physeq_env_mar_pruned,
 #print(physeq_mar_std_30)
 ```
 
+### Subset taxa
+
+```{r, subset_taxa}
+# Extract the taxonomic data as a data frame
+tax_data <- as.data.frame(phyloseq::tax_table(sf))
+
+##### Subset by boney fish
+# Check if 'Actinopteri' is in the 'Class' column
+if("Actinopteri" %in% tax_data$Class) {
+  # Subset if 'Actinopteri' is found
+  physeq_std_Act <- subset_taxa(sf, Class == "Actinopteri")
+  cat("Subset created successfully\n")
+} else {
+  # Handle the case where 'Actinopteri' is not found
+  cat("'Actinopteri' not found in the Class column\n")
+}
+
+##### Subset by Mammals 
+# Check if 'Mammalia' is in the 'Class' column
+if("Mammalia" %in% tax_data$Class) {
+  # Subset if 'Mammalia' is found
+  physeq_std_Mar <- subset_taxa(sf, Class == "Mammalia")
+  cat("Subset created successfully\n")
+} else {
+  # Handle the case where 'Mammalia' is not found
+  cat("'Mammalia' not found in the Class column\n")
+}
+
+
+##### subset by Sharks & Rays
+# Check if 'Chondrichthyes' is in the 'Class' column
+if("Chondrichthyes" %in% tax_data$Class) {
+  # Subset if 'Chondrichthyes' is found
+  physeq_std_Con <- subset_taxa(sf, Class == "Chondrichthyes")
+  cat("Subset created successfully\n")
+} else {
+  # Handle the case where 'Chondrichthyes' is not found
+  cat("'Chondrichthyes' not found in the Class column\n")
+}
+
+# create dataframe from phyloseq object
+#physeq_std_Act_df <- psmelt(physeq_std_Act)
+```#| echo: false
+# Chat GPT description - x represents the abundance data for a single taxon (like a species) across all samples. The function calculates the coefficient of variation, which is the standard deviation (sd(x)) divided by the mean (mean(x)), of this abundance data. The criterion for keeping a taxon in the dataset is that this coefficient of variation must be greater than 3.0. In simpler terms, it filters out taxa whose abundance varies less across samples compared to those whose abundance varies more.
+sf = filter_taxa(physeq_mar_std, function(x) sd(x)/mean(x) > 3.0, TRUE)
+
+
+```
+
+
 # Visualizing
 
 ###  Barplot - Families - Environmental Samples (excluding Controls)
@@ -686,61 +737,9 @@ ggsave(plot = Fig_ord_near_off_grid,
 ###USE for Prelim Report
 ```
 
-### Subset taxa
-
-```{r, subset_taxa}
-#| echo: false
-# Chat GPT description - x represents the abundance data for a single taxon (like a species) across all samples. The function calculates the coefficient of variation, which is the standard deviation (sd(x)) divided by the mean (mean(x)), of this abundance data. The criterion for keeping a taxon in the dataset is that this coefficient of variation must be greater than 3.0. In simpler terms, it filters out taxa whose abundance varies less across samples compared to those whose abundance varies more.
-sf = filter_taxa(physeq_mar_std, function(x) sd(x)/mean(x) > 3.0, TRUE)
-
-# Extract the taxonomic data as a data frame
-tax_data <- as.data.frame(phyloseq::tax_table(sf))
-
-##### Subset by boney fish
-# Check if 'Actinopteri' is in the 'Class' column
-if("Actinopteri" %in% tax_data$Class) {
-  # Subset if 'Actinopteri' is found
-  physeq_std_Act <- subset_taxa(sf, Class == "Actinopteri")
-  cat("Subset created successfully\n")
-} else {
-  # Handle the case where 'Actinopteri' is not found
-  cat("'Actinopteri' not found in the Class column\n")
-}
-
-##### Subset by Mammals 
-# Check if 'Mammalia' is in the 'Class' column
-if("Mammalia" %in% tax_data$Class) {
-  # Subset if 'Mammalia' is found
-  physeq_std_Mar <- subset_taxa(sf, Class == "Mammalia")
-  cat("Subset created successfully\n")
-} else {
-  # Handle the case where 'Mammalia' is not found
-  cat("'Mammalia' not found in the Class column\n")
-}
-
-
-##### subset by Sharks & Rays
-# Check if 'Chondrichthyes' is in the 'Class' column
-if("Chondrichthyes" %in% tax_data$Class) {
-  # Subset if 'Chondrichthyes' is found
-  physeq_std_Con <- subset_taxa(sf, Class == "Chondrichthyes")
-  cat("Subset created successfully\n")
-} else {
-  # Handle the case where 'Chondrichthyes' is not found
-  cat("'Chondrichthyes' not found in the Class column\n")
-}
-
-# create dataframe from phyloseq object
-#physeq_std_Act_df <- psmelt(physeq_std_Act)
-```
-
 ### Marine Actinopteri (Bony Fish) bar plot
 
 ```{r, cache=TRUE}
-
-# library for pasting visual objects in grid layout
-library(cowplot)
-library(viridisLite)
 
 # reorder s4 phyloseq object Sample data by Near_or_Offshore
 # data_to_rearrange <- physeq_std_Act@sam_data$Sample
