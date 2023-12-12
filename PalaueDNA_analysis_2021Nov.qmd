@@ -455,6 +455,7 @@ physeq1 <- merge_phyloseq(physeq, samp_metadata)
 #sample_names(physeq1)
 #rank_names(physeq1)
 #sample_variables(physeq1)
+#rank_names(physeq1)
 ```
 
 ###  Subset Phyloseq Samples - Keep Environmental Samples Only
@@ -518,6 +519,10 @@ physeq_mar_std <- transform_sample_counts(physeq = physeq_env_mar_pruned,
 ### Subset taxa
 
 ```{r, subset_taxa}
+#| echo: false
+# Chat GPT description - x represents the abundance data for a single taxon (like a species) across all samples. The function calculates the coefficient of variation, which is the standard deviation (sd(x)) divided by the mean (mean(x)), of this abundance data. The criterion for keeping a taxon in the dataset is that this coefficient of variation must be greater than 3.0. In simpler terms, it filters out taxa whose abundance varies less across samples compared to those whose abundance varies more.
+sf = filter_taxa(physeq_mar_std, function(x) sd(x)/mean(x) > 3.0, TRUE)
+
 # Extract the taxonomic data as a data frame
 tax_data <- as.data.frame(phyloseq::tax_table(sf))
 
@@ -557,11 +562,6 @@ if("Chondrichthyes" %in% tax_data$Class) {
 
 # create dataframe from phyloseq object
 #physeq_std_Act_df <- psmelt(physeq_std_Act)
-```#| echo: false
-# Chat GPT description - x represents the abundance data for a single taxon (like a species) across all samples. The function calculates the coefficient of variation, which is the standard deviation (sd(x)) divided by the mean (mean(x)), of this abundance data. The criterion for keeping a taxon in the dataset is that this coefficient of variation must be greater than 3.0. In simpler terms, it filters out taxa whose abundance varies less across samples compared to those whose abundance varies more.
-sf = filter_taxa(physeq_mar_std, function(x) sd(x)/mean(x) > 3.0, TRUE)
-
-
 ```
 
 
@@ -814,8 +814,22 @@ dev.off()
 
 ### Marine Chondrichthyes (Sharks & Rays)
 
-```{r}
-plot_bar(physeq_std_Con, fill = "Species")
+```{r bar_plot_chondrichthyes}
+# First, check if the 'physeq_std_Con' object exists in the global environment
+if(exists("physeq_std_Con")) {
+    # Check if it's a valid phyloseq object and contains species-level data
+    if (!is.null(physeq_std_Con) && "Species" %in% rank_names(physeq_std_Con)) {
+        # Plot if it's a valid phyloseq object with species data
+        p <- plot_bar(physeq_std_Con, fill = "Species") # add ggplot graph things here! 
+        print(p)
+    } else {
+        cat("The phyloseq object 'physeq_std_Con' is either null or does not contain species-level data.\n")
+    }
+} else {
+    # If the object does not exist in the global environment
+    cat("'physeq_std_Con' does not exist.\n")
+}
+
 ```
 
 ### Top10
