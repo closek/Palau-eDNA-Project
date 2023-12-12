@@ -209,10 +209,13 @@ The code chunk below "clean-data" is separated into its own `./scripts/clean_dat
 ```{r read-run-clean-data}
 # only run the script if the output .csv file does not yet exist
 # load data if it already exsists
-if (!dir.exists(file.path(dir_data_proc, paste0("esv_clean_data_rv_", analysis_date, ".csv")))) {
+if (!file.exists(file.path(dir_data_proc, paste0("esv_clean_data_rv_", analysis_date, ".csv")))) {
   source(file.path(dir_scripts, "clean_data.R")) # run cleaning script in scripts folder
-} else (esv_clean_data_df <- read_csv(file.path(dir_data_proc, 
-                                        paste0("esv_clean_data_rv_", analysis_date, ".csv"))))
+  cat("ran cleaning script")
+} else {esv_clean_data_df <- read_csv(file.path(dir_data_proc, 
+                                        paste0("esv_clean_data_rv_", analysis_date, ".csv")))
+        cat("loaded exsisting clean data")
+}
 
 
 ```
