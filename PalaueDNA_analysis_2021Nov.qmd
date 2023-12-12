@@ -15,7 +15,7 @@ format:
     toc: true
     code-tools: true
     theme: mintly
-    number-depth: 3
+    number-depth: 2
     self-contained: true
 title-block-banner: "#33ccffff"
 title-block-banner-color: "#ffdd00ff"
