@@ -688,14 +688,50 @@ ggsave(plot = Fig_ord_near_off_grid,
 
 ### Subset taxa
 
-```{r}
-
+```{r, subset_taxa}
+#| echo: false
+# Chat GPT description - x represents the abundance data for a single taxon (like a species) across all samples. The function calculates the coefficient of variation, which is the standard deviation (sd(x)) divided by the mean (mean(x)), of this abundance data. The criterion for keeping a taxon in the dataset is that this coefficient of variation must be greater than 3.0. In simpler terms, it filters out taxa whose abundance varies less across samples compared to those whose abundance varies more.
 sf = filter_taxa(physeq_mar_std, function(x) sd(x)/mean(x) > 3.0, TRUE)
-sfAct = subset_taxa(sf, Class=="Actinopteri")
+
+# Extract the taxonomic data as a data frame
+tax_data <- as.data.frame(phyloseq::tax_table(sf))
+
+##### Subset by boney fish
+# Check if 'Actinopteri' is in the 'Class' column
+if("Actinopteri" %in% tax_data$Class) {
+  # Subset if 'Actinopteri' is found
+  std_data_Act <- subset_taxa(sf, Class == "Actinopteri")
+  cat("Subset created successfully\n")
+} else {
+  # Handle the case where 'Actinopteri' is not found
+  cat("'Actinopteri' not found in the Class column\n")
+}
+
+##### Subset by Mammals 
+# Check if 'Mammalia' is in the 'Class' column
+if("Mammalia" %in% tax_data$Class) {
+  # Subset if 'Mammalia' is found
+  sfMam <- subset_taxa(sf, Class == "Mammalia")
+  cat("Subset created successfully\n")
+} else {
+  # Handle the case where 'Mammalia' is not found
+  cat("'Mammalia' not found in the Class column\n")
+}
+
+
+##### subset by Sharks & Rays
+# Check if 'Chondrichthyes' is in the 'Class' column
+if("Chondrichthyes" %in% tax_data$Class) {
+  # Subset if 'Chondrichthyes' is found
+  sfCon <- subset_taxa(sf, Class == "Chondrichthyes")
+  cat("Subset created successfully\n")
+} else {
+  # Handle the case where 'Chondrichthyes' is not found
+  cat("'Chondrichthyes' not found in the Class column\n")
+}
+
 # create dataframe from phyloseq object
-sfAct_df <- psmelt(sfAct)
-sfMam = subset_taxa(sf, Class=="Mammalia")
-sfCon = subset_taxa(sf, Class=="Chondrichthyes")
+#std_data_Act_df <- psmelt(std_data_Act)
 ```
 
 ### Marine Actinopteri (Bony Fish) bar plot
@@ -707,15 +743,15 @@ library(cowplot)
 library(viridisLite)
 
 # reorder s4 phyloseq object Sample data by Near_or_Offshore
-# data_to_rearrange <- sfAct@sam_data$Sample
-# data_to_order_by <- sfAct@sam_data$Near_or_Offshore
+# data_to_rearrange <- std_data_Act@sam_data$Sample
+# data_to_order_by <- std_data_Act@sam_data$Near_or_Offshore
 # ordering <- order(data_to_order_by)
-# sfAct@sam_data$Sample <- data_to_rearrange[ordering]
+# std_data_Act@sam_data$Sample <- data_to_rearrange[ordering]
 
 
 fish_color <- viridis(n = 90, option = "turbo")
 
-Fig_bony_fish <- plot_bar(sfAct, fill = "Family") +
+Fig_bony_fish <- plot_bar(std_data_Act, fill = "Family") +
   theme_classic() +
   theme(axis.title.x = element_blank(),
         axis.text.x = element_blank(),
@@ -773,7 +809,7 @@ ggsave(bar_plot_marine_mammals,
        device = "jpeg",
        filename = file.path("products/figures/Fig_bar_marine_mammals.png"))
 
-plot_bar(sfAct, fill = "Family")
+plot_bar(std_data_Act, fill = "Family")
 dev.off()
 ```
 
