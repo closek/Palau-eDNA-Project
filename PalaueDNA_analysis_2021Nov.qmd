@@ -956,7 +956,7 @@ get_taxa_unique(sfOffshore, "Species")
 #81
 ```
 
-###Top
+### Top
 
 ```{r}
 top5sf_species <- sort(tapply(taxa_sums(sf), phyloseq::tax_table(sf) [, "Family"], sum), decreasing = TRUE)[1:5]
@@ -999,6 +999,7 @@ top10sfOff_species
 ###To convert phyloseq object to dataframe use metagMisc
 
 ```{r}
+#| eval: false
 devtools::install_github("vmikk/metagMisc")
 library(vmikk/metagMisc)
 ```
@@ -1011,7 +1012,7 @@ sfSHR_species <- top_taxa(sfSHR,
                   n_taxa = 30)
 sfSHR_species
 #psmelt(sfSHR_species)
-#write.csv(sfSHR_species,file = "./sfSHR_species.csv")
+#write_csv(sfSHR_species, file.path(dir_data_proc, "sfSHR_species.csv"))
 ```
 
 ```{r}
