@@ -116,7 +116,7 @@ This analysis template is a collaboration between [@closek](https://github.com/c
 
 MIT License
 
-Copyright (c) [2023] [Collin Colsek & Althea Marks]
+Copyright (c) 2023 Collin Colsek & Althea Marks
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
