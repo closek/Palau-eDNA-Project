@@ -711,7 +711,7 @@ if("Actinopteri" %in% tax_data$Class) {
 # Check if 'Mammalia' is in the 'Class' column
 if("Mammalia" %in% tax_data$Class) {
   # Subset if 'Mammalia' is found
-  sfMam <- subset_taxa(sf, Class == "Mammalia")
+  physeq_std_Mar <- subset_taxa(sf, Class == "Mammalia")
   cat("Subset created successfully\n")
 } else {
   # Handle the case where 'Mammalia' is not found
@@ -723,7 +723,7 @@ if("Mammalia" %in% tax_data$Class) {
 # Check if 'Chondrichthyes' is in the 'Class' column
 if("Chondrichthyes" %in% tax_data$Class) {
   # Subset if 'Chondrichthyes' is found
-  sfCon <- subset_taxa(sf, Class == "Chondrichthyes")
+  physeq_std_Con <- subset_taxa(sf, Class == "Chondrichthyes")
   cat("Subset created successfully\n")
 } else {
   # Handle the case where 'Chondrichthyes' is not found
@@ -802,7 +802,7 @@ Fig_bony_fish_leg2
 ### Marine Mammals
 
 ```{r}
-bar_plot_marine_mammals <- plot_bar(sfMam, fill = "Species")
+bar_plot_marine_mammals <- plot_bar(physeq_std_Mar, fill = "Species")
 
 #jpeg(file="saving_plot2.jpeg")
 ggsave(bar_plot_marine_mammals,
@@ -816,7 +816,7 @@ dev.off()
 ### Marine Chondrichthyes (Sharks & Rays)
 
 ```{r}
-plot_bar(sfCon, fill = "Species")
+plot_bar(physeq_std_Con, fill = "Species")
 ```
 
 ### Top10
