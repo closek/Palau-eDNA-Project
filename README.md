@@ -36,6 +36,7 @@ The directory structure and files:
 ├── PalaueDNA.Rproj
 ├── PalaueDNA_analysis_Nov2021.qmd
 ├── PalaueDNA_analysis_template.qmd
+├── PalaueDNA_analysis_template.html
 ├── README.md
 └── renv.lock
 ```
@@ -58,6 +59,7 @@ File Descirptions:
 - `PalaueDNA.Rproj` R project container all code and files run in this mini environment
 - `PalaueDNA_analysis_[...].qmd` Analysis files for specific sampling events (MonthYear)
 - `PalaueDNA_analysis_template.qmd` Template for analysis and visualization. Make a copy of this file and rename copy to start a new analysis. Update this file to make changes for future analyses.
+- `PalaueDNA_analysis_template.html` The rendered output created by `PalaueDNA_analysis_template.qmd` for easy reference of report. Need to open in browser window
 - `README.md` contains project description and instruction in markdown
 - `renv.lock` record of package dependencies and versions used to construct this project. 
 
