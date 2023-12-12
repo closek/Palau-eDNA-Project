@@ -609,10 +609,8 @@ plot_richness(physeq_mar_std, measures=c("Chao1", "Shannon"), x="Near_or_Offshor
 ### Ordinations
 
 ```{r}
-physeq_mar_std.ord <- ordinate(physeq_mar_std, "PCoA", "bray")
-```
 
-```{r}
+physeq_mar_std.ord <- ordinate(physeq_mar_std, "PCoA", "bray")
 # base plot ordination - other iterations are built on this object
 po <- plot_ordination(physeq_mar_std, 
                       physeq_mar_std.ord, 
@@ -653,7 +651,15 @@ ggsave(plot = Fig_ord_near_off,
 ```
 
 ```{r}
-po +facet_wrap(~Cardinal_direction)
+po + 
+  facet_wrap(~Cardinal_direction) +
+    scale_color_manual(values = zone_colors,
+                     breaks = c("SHR", "LGN", "FRR", "AFZ", "DFZ", "NMS"),
+                     guide = guide_legend(override.aes = list(size = 3, shape = c(16,16,16,17,17,17)))) +
+  guides(shape = guide_legend(override.aes = list(size = 3, shape = c(1,2)))) +
+  theme_light() +
+  labs(shape = "Region") +
+  coord_fixed()
 ```
 
 ```{r}
