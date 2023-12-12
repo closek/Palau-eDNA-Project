@@ -1,6 +1,8 @@
-# Palau eDNA Analysis Template
+# Palau eDNA Analysis Project
 
 ## Description
+
+Repository for Analysis template and current analysis versions
 
 - Motivation - To standardize and document data analysis of ongoing eDNA monitoring 
 - Why - Reduce capacity required to analyize data and make workflow reproducible over monitoring efforts
@@ -54,7 +56,7 @@ Folder and file descriptions:
   - In the command line:
 ```bash
 # run in command line shell
-git clone https://github.com/closek/Nov2021.git
+git clone https://github.com/closek/Palau-eDNA-Project.git
 cd yourprojectname
 ```
   OR
