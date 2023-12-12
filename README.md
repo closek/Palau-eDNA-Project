@@ -2,12 +2,12 @@
 
 ## Description
 
-Repository for Analysis template and current analysis versions
+This repository has two purposes: 
 
-- Motivation - To standardize and document data analysis of ongoing eDNA monitoring 
-- Why - Reduce capacity required to analyize data and make workflow reproducible over monitoring efforts
-- What problem does it solve - loss of knowledge and proceedure as monitoring project grows and ages
-- What did you learn - Documentation is key, thinking about ways to make the code useable across different computer set ups
+1) Template for eDNA analysis and visualization
+2) House current analysis versions
+
+The motivation is to standardize and document data analysis of ongoing eDNA monitoring in Palau. The aim is to reduce capacity required to analyize data and make workflow reproducible over monitoring efforts. We aim to prevent the loss of knowledge and proceedure as monitoring project grows and ages. 
 
 ## Table of Contents
 
@@ -63,7 +63,7 @@ File Descirptions:
 
 ## Installation
 
-1) Copy this repository to your local machine (choose one method)
+1) Copy this repository to your local machine (choose one method/bullet)
   - Download Software from Zenodo --> [paste future DOI badge here]
   - In the command line:
 ```bash
@@ -71,7 +71,6 @@ File Descirptions:
 git clone https://github.com/closek/Palau-eDNA-Project.git
 cd yourprojectname
 ```
-  OR
   -  Github webpage `Repo URL`:
       - click green `<> Code` tab with drop down menu, select `Local` tab, click `Download ZIP`
       - open `.zip` file on local computer
