@@ -20,7 +20,7 @@ format:
 title-block-banner: "#33ccffff"
 title-block-banner-color: "#ffdd00ff"
 code-fold: true
-editor: visual
+editor: source
 editor_options: 
   chunk_output_type: inline
 execute: 
@@ -139,7 +139,7 @@ library(conflicted)
 
 ```
 
-###  Create paths to folders
+### Create paths to folders
 
 ```{r file-directories-paths}
 # create file paths to folders within the project for easy & consistent reference throughout the analysis
@@ -183,14 +183,14 @@ if (!dir.exists(dir_images)) {
 
 ```
 
-###  Set analysis date
+### Set analysis date
 
 ```{r set-analysis-date}
 # set this variable here, used throughout analysis for file naming. Used to differentiate between analyses using the same analysis template on different data
 analysis_date <- "2021_11"
 ```
 
-###  Load data
+### Load data
 
 ```{r load-data}
 esv_data_all <- read_csv(file.path(dir_data_raw, "JVB1710-MiFishU-read-data.csv"))
@@ -202,7 +202,7 @@ esv_data_all <- read_csv(file.path(dir_data_raw, "JVB1710-MiFishU-read-data.csv"
 
 ## Clean & save data
 
-###  Clean & organize data
+### Clean & organize data
 
 The code chunk below "clean-data" is separated into its own `./scripts/clean_data.R` file and sourced by calling `source(file.path(dir_scripts, clean_data.R)` here. If you are looking save space in this analysis document, or want to reuse this exact same data cleaning protocol in different analysis document. The same goes for "create-nearshore-offshore-data" and "create-near-offshore-species-list" chunks, they could be their own scripts or be added to a clean_data script. If you choose to do this, the "example-source-clean-data" chunk below can be used.
 
@@ -220,7 +220,7 @@ if (!file.exists(file.path(dir_data_proc, paste0("esv_clean_data_rv_", analysis_
 
 ```
 
-###  Create Nearshore & Offshore dataframes (or load if they already exist)
+### Create Nearshore & Offshore dataframes (or load if they already exist)
 
 ```{r create-nearshore-offshore-data}
 # store file names in objects to reuse & reference. Change here if needed, and will be automatically used through out code
@@ -255,7 +255,7 @@ if (!dir.exists(file.path(dir_data_proc, file_nearshore_esv))) {
 
 ```
 
-###  Create Nearshore & Offshore species dataframes (or load if they already exist)
+### Create Nearshore & Offshore species dataframes (or load if they already exist)
 
 ```{r create-near-offshore-species-list}
 # store file names for reuse
@@ -288,7 +288,7 @@ if (!dir.exists(file.path(dir_data_proc, file_nearshore_esv_sp))) {
 
 ## Data Analysis
 
-###  Unique Species
+### Unique Species
 
 ```{r unique-species}
 #| eval: false
@@ -296,7 +296,7 @@ n_distinct(esv_clean_data_df$Species)
 unique(esv_clean_data_df$Species)
 ```
 
-###  Unique Species - nearshore
+### Unique Species - nearshore
 
 ```{r unique-nearshore-species}
 #| eval: false
@@ -311,7 +311,7 @@ n_distinct(nearshore_esv$Species)
 unique(nearshore_esv$Species)
 ```
 
-###  Unique Species - offshore
+### Unique Species - offshore
 
 ```{r unique-offshore-species}
 #| eval: false
@@ -320,7 +320,7 @@ n_distinct(offshore_esv$Species)
 unique(offshore_esv$Species)
 ```
 
-###  Unique Genera
+### Unique Genera
 
 ```{r unique-genera}
 #| eval: false
@@ -329,7 +329,7 @@ n_distinct(esv_clean_data_df$Genus)
 unique(esv_clean_data_df$Genus)
 ```
 
-###  Unique Families
+### Unique Families
 
 ```{r unique-families}
 #| eval: false
@@ -338,7 +338,7 @@ n_distinct(esv_clean_data_df$Family)
 unique(esv_clean_data_df$Family)
 ```
 
-###  Transform data to Phyloseq Object
+### Transform data to Phyloseq Object
 
 ```{r create-phyloseq-object}
 #| output: false
@@ -378,7 +378,7 @@ physeq <- phyloseq(ESV, TAX)
 physeq1 <- merge_phyloseq(physeq, samp_metadata)
 ```
 
-###  Explore Components of Phyloseq Object (if needed)
+### Explore Components of Phyloseq Object (if needed)
 
 ```{r explore-phyloseq}
 #sample_names(physeq1)
@@ -387,13 +387,13 @@ physeq1 <- merge_phyloseq(physeq, samp_metadata)
 #rank_names(physeq1)
 ```
 
-###  Subset Phyloseq Samples - Keep Environmental Samples Only
+### Subset Phyloseq Samples - Keep Environmental Samples Only
 
 ```{r phyloseq-env-samples_only}
 physeq_env <- subset_samples(physeq1, Control_or_Envtl =="Envtl")
 ```
 
-###  Subset Phyloseq Environmental Samples - ESVs with marine fish and mammal annotations
+### Subset Phyloseq Environmental Samples - ESVs with marine fish and mammal annotations
 
 ```{r create-env-marine-fish-mammal, echo=FALSE}
 #Select for only Classes: Actinopteri and Mammalia, which will remove Classes: Aves and Amphibia, as well as the unannotated ESVs 
@@ -493,10 +493,9 @@ if("Chondrichthyes" %in% tax_data$Class) {
 #physeq_std_Act_df <- psmelt(physeq_std_Act)
 ```
 
-
 # Visualizing
 
-###  Barplot - Families - Environmental Samples (excluding Controls)
+### Barplot - Families - Environmental Samples (excluding Controls)
 
 ```{r figure-barplot-families_enviro}
 #| label: Fam-Env-samples
@@ -511,7 +510,7 @@ if("Chondrichthyes" %in% tax_data$Class) {
 plot_bar(physeq_env, fill = "Family")
 ```
 
-###  Barplot - Normalized Environmental Samples & Marine ESVs
+### Barplot - Normalized Environmental Samples & Marine ESVs
 
 -   Family
 
@@ -525,7 +524,7 @@ plot_bar(physeq_mar_std, fill = "Family")
 plot_bar(physeq_mar_std, fill = "Order")
 ```
 
-###  Heatmap - Normalized Environmental Samples & Marine ESVs
+### Heatmap - Normalized Environmental Samples & Marine ESVs
 
 -   Phylum
 
@@ -533,7 +532,7 @@ plot_bar(physeq_mar_std, fill = "Order")
 plot_heatmap(physeq_mar_std, taxa.label="Phylum")
 ```
 
-###  Barplot - Alternative formats
+### Barplot - Alternative formats
 
 -   Family
 
