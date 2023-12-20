@@ -1,6 +1,8 @@
 # Palau eDNA Analysis Project
 
-## Description
+ [![DOI](https://zenodo.org/badge/636463864.svg)](https://zenodo.org/doi/10.5281/zenodo.10360267)
+ 
+ ## Description
 
 This repository has two purposes: 
 
