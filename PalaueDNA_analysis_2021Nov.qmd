@@ -730,7 +730,6 @@ Fig_bony_fish_leg2
 ### Marine Mammals
 
 ```{r}
-<<<<<<< HEAD
 bar_plot_marine_mammals <- plot_bar(physeq_std_Mar, fill = "Species")
 
 #jpeg(file="saving_plot2.jpeg")
@@ -739,12 +738,12 @@ ggsave(bar_plot_marine_mammals,
        filename = file.path("products/figures/Fig_bar_marine_mammals.png"))
 
 plot_bar(physeq_std_Act, fill = "Family")
-=======
-plot_bar(sfMam, fill = "Species")
+
+plot_bar(physeq_std_Mar, fill = "Species")
 
 jpeg(file="saving_plot2.jpeg")
-plot_bar(sfAct, fill = "Family")
->>>>>>> 19de2b4 (AM adjusted plot outputs dimensions)
+plot_bar(physeq_std_Act, fill = "Family")
+
 dev.off()
 ```
 
