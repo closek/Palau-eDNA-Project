@@ -741,7 +741,7 @@ plot_bar(physeq_std_Act, fill = "Family")
 
 plot_bar(physeq_std_Mar, fill = "Species")
 
-jpeg(file="saving_plot2.jpeg")
+#jpeg(file="saving_plot2.jpeg")
 plot_bar(physeq_std_Act, fill = "Family")
 
 dev.off()
