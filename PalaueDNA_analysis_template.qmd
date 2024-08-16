@@ -113,7 +113,8 @@ Although this package management strategy is meant to reduce errors among future
 #| output: false
 
 # load renv packages from project renv.lock file
-#renv::restore()
+renv::load(project = NULL)
+renv::restore()
 
 library(renv)
 library(tidyverse) # this include tidyr, ggplot2, dplyr for data manipulation and graphing

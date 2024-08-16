@@ -115,27 +115,59 @@ Although this package management strategy is meant to reduce errors among future
 # load renv packages from project renv.lock file
 #renv::restore()
 
-library(renv)
+#library(renv)
+
+#renv::deactivate()
+
+#install.packages("tidyverse")
+#install.packages("superheat")
+#install.packages("cowplot")
+#install.packages("owmr")
+#install.packages("devtools")
+#install.packages("patchwork")
+
+#Packages names from CRAN:
+packages <- c("tidyverse", "superheat", "cowplot", "owmr", "devtools", "patchwork")
+
+#Install packages from CRAN not yet installed:
+installed_packages <- packages %in% rownames(installed.packages())
+if (any(installed_packages == FALSE)) {
+  installed.packages(packages[!installed_packages])
+}
+
+
+#Install packages from Bioconductor:
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install(c("phyloseq", "MicrobiotaProcess"))
+
+#Install packages from Github:
+devtools::install_github("an-bui/calecopal")
+
+
+#Load packages from CRAN:
 library(tidyverse) # this include tidyr, ggplot2, dplyr for data manipulation and graphing
 library(vegan)
 library(data.table)
 library(superheat)
-library(calecopal) # color palette
 library(viridisLite) # color blind & gray scale friendly color palette
 library(cowplot) # create graphs with multiple components in a grid
-library(viridisLite)
 #library(fantaxtic)
 library(magrittr) # contains pipe function "%>%"
-#devtools::install_github("joey711/phyloseq")
-library(phyloseq)
-packageVersion("phyloseq")
 library(owmr)
 library(devtools)
-#BiocManager::install("MicrobiotaProcess")
-library(MicrobiotaProcess)
 library(patchwork)
-#devtools::install_github("r-lib/conflicted")
 library(conflicted)
+
+
+#Load packages from Bioconductor:
+library(phyloseq)
+#packageVersion("phyloseq")
+library(MicrobiotaProcess)
+
+
+#Load packages from Github:
+library(calecopal) # color palette
 
 ```
 
